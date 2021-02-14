@@ -190,34 +190,40 @@ $(document).ready(function () {
 
 	var AllCategoriesData = JSON.parse(ipcRenderer.sendSync('get-all-categories', ""));
 
-	AllCategoriesData.sort(sort_by('fullpath', false, (a) => a.toUpperCase()));
+	if (Object.keys(AllCategoriesData).length > 0) {
 
-	// console.log(data);
-	// console.log( list_to_tree(data) );
+		AllCategoriesData.sort(sort_by('fullpath', false, (a) => a.toUpperCase()));
 
-	generateTree(list_to_tree(AllCategoriesData), tree.children('.dropdown-tree__content'));
+		// console.log(data);
+		// console.log( list_to_tree(data) );
 
-	// slide children lists
-	// append slide button to lists
-	let listItems = tree.find('li');
-	listItems.each(function (index) {
-		if (listItems.eq(index).children('ul').length) {
-			listItems.eq(index).append('<div class="dropdown-tree__btn"></div>');
-		}
-	});
+		generateTree(list_to_tree(AllCategoriesData), tree.children('.dropdown-tree__content'));
 
-	listItems.children('.dropdown-tree__btn:first').first().parent().addClass('children-show');
+		// slide children lists
+		// append slide button to lists
+		let listItems = tree.find('li');
+		listItems.each(function (index) {
+			if (listItems.eq(index).children('ul').length) {
+				listItems.eq(index).append('<div class="dropdown-tree__btn"></div>');
+			}
+		});
 
-	listItems.children('.dropdown-tree__btn').click(function () {
-		if ($(this).parent().hasClass('children-show')) {
-			$(this).parent().removeClass('children-show');
-			disableTreeButtons(300);
-		}
-		else {
-			$(this).parent().addClass('children-show');
-			disableTreeButtons(300);
-		}
-	});
+		listItems.children('.dropdown-tree__btn:first').first().parent().addClass('children-show');
+
+		listItems.children('.dropdown-tree__btn').click(function () {
+			if ($(this).parent().hasClass('children-show')) {
+				$(this).parent().removeClass('children-show');
+				disableTreeButtons(300);
+			}
+			else {
+				$(this).parent().addClass('children-show');
+				disableTreeButtons(300);
+			}
+		});
+	} else
+	{
+		alert("No data found. Please click on the \"Refresh Data\" button! ");
+	}
 
 	$.ajax({
 		url: "./lesson.json",
