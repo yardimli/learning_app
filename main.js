@@ -23,32 +23,35 @@ var LesonParameters;
 
 // function to read from a json file
 function readWords() {
+	let data;
 	if (existsSync(path.join(dataPath, 'words.json'))) {
-		const data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
+		data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
 	}
 	else {
-		const data = "{}";
+		data = "{}";
 	}
 	return data
 }
 
 function readOpposites() {
 	// const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
+	let data;
 	if (existsSync(path.join(dataPath, 'opposites.json'))) {
-		const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
+		data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
 	}
 	else {
-		const data = "{}";
+		data = "{}";
 	}
-	return data
+	data
 }
 
 function readCategories() {
+	let data;
 	if (existsSync(path.join(dataPath, 'categories.json'))) {
-		const data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
+		data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
 	}
 	else {
-		const data = "{}";
+		data = "{}";
 	}
 	return data
 }
