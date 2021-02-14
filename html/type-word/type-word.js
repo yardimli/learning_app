@@ -178,6 +178,7 @@ function CreateLesson(ArrayID) {
 }
 
 function CorrectWordEntered() {
+	update_keyboard("", "1", 10000);
 	Timeout2 = setTimeout(function () {
 		play_sound(CorrectWordAudio, "media_audio", false);
 	}, 1000);
