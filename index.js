@@ -188,48 +188,36 @@ $(document).ready(function () {
 		return roots;
 	}
 
-	setTimeout(function () {
-		$.ajax({
-			url: "./categories.json",
-			method: 'get',
-			dataType: 'json',
-			error: function (data) {
-				console.log("ERROR");
-				console.log(data);
-			},
-			success: function (data) {
+	var AllCategoriesData = JSON.parse(ipcRenderer.sendSync('get-all-categories', ""));
 
-				data.sort(sort_by('fullpath', false, (a) => a.toUpperCase()));
+	AllCategoriesData.sort(sort_by('fullpath', false, (a) => a.toUpperCase()));
 
-				// console.log(data);
-				// console.log( list_to_tree(data) );
+	// console.log(data);
+	// console.log( list_to_tree(data) );
 
-				generateTree(list_to_tree(data), tree.children('.dropdown-tree__content'));
+	generateTree(list_to_tree(AllCategoriesData), tree.children('.dropdown-tree__content'));
 
-				// slide children lists
-				// append slide button to lists
-				let listItems = tree.find('li');
-				listItems.each(function (index) {
-					if (listItems.eq(index).children('ul').length) {
-						listItems.eq(index).append('<div class="dropdown-tree__btn"></div>');
-					}
-				});
+	// slide children lists
+	// append slide button to lists
+	let listItems = tree.find('li');
+	listItems.each(function (index) {
+		if (listItems.eq(index).children('ul').length) {
+			listItems.eq(index).append('<div class="dropdown-tree__btn"></div>');
+		}
+	});
 
-				listItems.children('.dropdown-tree__btn:first').first().parent().addClass('children-show');
+	listItems.children('.dropdown-tree__btn:first').first().parent().addClass('children-show');
 
-				listItems.children('.dropdown-tree__btn').click(function () {
-					if ($(this).parent().hasClass('children-show')) {
-						$(this).parent().removeClass('children-show');
-						disableTreeButtons(300);
-					}
-					else {
-						$(this).parent().addClass('children-show');
-						disableTreeButtons(300);
-					}
-				});
-			}
-		});
-	}, 1000);
+	listItems.children('.dropdown-tree__btn').click(function () {
+		if ($(this).parent().hasClass('children-show')) {
+			$(this).parent().removeClass('children-show');
+			disableTreeButtons(300);
+		}
+		else {
+			$(this).parent().addClass('children-show');
+			disableTreeButtons(300);
+		}
+	});
 
 	$.ajax({
 		url: "./lesson.json",
@@ -379,7 +367,7 @@ $(document).ready(function () {
 
 					LessonParameters["category"] = LessonCategories;
 
-					console.log( LessonParameters );
+					console.log(LessonParameters);
 
 					var ScreenPath = $("#" + $(this).data("lesson_id")).data("screen_path");
 					ipcRenderer.send('set-lesson-parameters', LessonParameters);

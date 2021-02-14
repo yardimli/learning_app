@@ -19,6 +19,8 @@ var categoriesJSON;
 var MainWin;
 var newGuest;
 var LesonParameters;
+
+
 // function to read from a json file
 function readWords() {
 	const data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
@@ -27,7 +29,12 @@ function readWords() {
 
 function readOpposites() {
 	// const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
-	const data = readFileSync('./opposites.json', 'utf8')
+	const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
+	return data
+}
+
+function readCategories() {
+	const data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
 	return data
 }
 
@@ -82,7 +89,7 @@ console.log("NEW : "+url);
 			nativeWindowOpen: true
 		}
 	})
-	newGuest.webContents.openDevTools({mode: 'bottom'});
+//	newGuest.webContents.openDevTools({mode: 'bottom'});
 	newGuest.loadFile(url);
 
 }
@@ -96,7 +103,7 @@ function createWindow() {
 			nativeWindowOpen: true
 		}
 	})
-	MainWin.webContents.openDevTools({mode: 'bottom'})
+//	MainWin.webContents.openDevTools({mode: 'bottom'})
 
 	MainWin.loadFile('index.html')
 
@@ -174,12 +181,17 @@ function createWindow() {
 			log_and_reply(event,err);
 		}
 
-		log_and_reply(event,"download words.json");
 
 		// DownloadManager.register({downloadFolder: dataPath});
 
+		log_and_reply(event,"download opposites.json");
+		download("https://elosoft.tw/picture-dictionary-editor/opposites.json", path.join(dataPath, "opposites.json"), function () {
+			log_and_reply(event,"finished downloading opposites.json");
+		});
 
-		download("https://elosoft.tw/picture-dictionary-editor/dictionary/data.php", path.join(dataPath, "words2.json"), function () {
+
+		log_and_reply(event,"download words.json");
+			download("https://elosoft.tw/picture-dictionary-editor/dictionary/data.php", path.join(dataPath, "words2.json"), function () {
 
 			if (fs.existsSync(path.join(dataPath, "words2.json"))) {
 
@@ -428,11 +440,17 @@ ipcMain.on('get-all-opposites', (event, arg) => {
 	event.returnValue = readOpposites()
 })
 
+ipcMain.on('get-all-categories', (event, arg) => {
+	console.log(arg)
+	event.returnValue = readCategories()
+})
+
+
 
 app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') {
+	// if (process.platform !== 'darwin') {
 		app.quit()
-	}
+	// }
 })
 
 app.on('activate', () => {

@@ -1,0 +1,27 @@
+{
+  "name": "learning_app",
+  "version": "0.1.0",
+  "dependencies": {
+    "async": "^3.2.0",
+    "electron": "^11.2.3",
+    "mkdirp": "^1.0.4"
+  },
+  "main": "main.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yardimli/learning_app.git"
+  },
+  "keywords": [],
+  "author": "Ekim Emre Yardimli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yardimli/learning_app/issues"
+  },
+  "homepage": "https://github.com/yardimli/learning_app#readme",
+  "description": "Learn to Type app",
+  "scripts": {
+    "start": "electron ."
+  },
+  "config": {}
+}
