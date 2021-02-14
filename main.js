@@ -48,7 +48,7 @@ function readCategories() {
 		const data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
 	}
 	else {
-		data = "{}";
+		const data = "{}";
 	}
 	return data
 }
