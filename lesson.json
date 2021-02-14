@@ -417,6 +417,16 @@
         "value": "fromstring"
       },
       {
+        "name": "Predictive from selected words",
+        "query": "random",
+        "value": "predictive_simple"
+      },
+      {
+        "name": "Predictive from all words in categories",
+        "query": "random",
+        "value": "predictive_full"
+      },
+      {
         "name": "Full Keyboard",
         "query": "random",
         "value": "full"
