@@ -1,5 +1,5 @@
 const {app, protocol, ipcMain, session, BrowserWindow} = require('electron')
-const {readFileSync} = require('fs') // used to read files
+const {readFileSync, existsSync} = require('fs') // used to read files
 const path = require('path');
 const mkdirp = require('mkdirp');
 const fs = require('fs') // used to read files
@@ -23,18 +23,33 @@ var LesonParameters;
 
 // function to read from a json file
 function readWords() {
-	const data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
+	if (existsSync(path.join(dataPath, 'words.json'))) {
+		const data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
+	}
+	else {
+		const data = "{}";
+	}
 	return data
 }
 
 function readOpposites() {
 	// const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
-	const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
+	if (existsSync(path.join(dataPath, 'opposites.json'))) {
+		const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
+	}
+	else {
+		const data = "{}";
+	}
 	return data
 }
 
 function readCategories() {
-	const data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
+	if (existsSync(path.join(dataPath, 'categories.json'))) {
+		const data = readFileSync(path.join(dataPath, 'categories.json'), 'utf8')
+	}
+	else {
+		data = "{}";
+	}
 	return data
 }
 
@@ -75,10 +90,9 @@ var download = function (url, dest, cb) {
 };
 
 
-
 function createChildWindow(url) {
 
-console.log("NEW : "+url);
+	console.log("NEW : " + url);
 	newGuest = new BrowserWindow({
 		parent: MainWin,
 		width: 1280,
@@ -134,7 +148,7 @@ function createWindow() {
 
 	// Main process
 
-	function log_and_reply(event,msg) {
+	function log_and_reply(event, msg) {
 		console.log(msg)
 		event.reply('refresh-data-updated', msg);
 	}
@@ -145,59 +159,59 @@ function createWindow() {
 //--------------------------------------------------------------------------------------------------------------
 // download the data
 		console.log("-----------------------------");
-		log_and_reply(event,path.join(dataPath, "audio"));
+		log_and_reply(event, path.join(dataPath, "audio"));
 
 		mkdirp(path.join(dataPath, "audio")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "audio") + " folder made"));
 
 		mkdirp(path.join(dataPath, "audio" + path.sep + "tr")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio" + path.sep + "tr") + " made"));
+			log_and_reply(event, path.join(dataPath, "audio" + path.sep + "tr") + " made"));
 
 		mkdirp(path.join(dataPath, "audio" + path.sep + "en")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio" + path.sep + "en") + " made"));
+			log_and_reply(event, path.join(dataPath, "audio" + path.sep + "en") + " made"));
 
 		mkdirp(path.join(dataPath, "audio" + path.sep + "ch")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio" + path.sep + "ch") + " made"));
+			log_and_reply(event, path.join(dataPath, "audio" + path.sep + "ch") + " made"));
 
 		mkdirp(path.join(dataPath, "video")).then(made =>
-			log_and_reply(event,path.join(dataPath, "video") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "video") + " folder made"));
 
 		mkdirp(path.join(dataPath, "pictures")).then(made =>
-			log_and_reply(event,path.join(dataPath, "pictures") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "pictures") + " folder made"));
 
 		mkdirp(path.join(dataPath, "pictures" + path.sep + "svg")).then(made =>
-			log_and_reply(event,path.join(dataPath, "pictures" + path.sep + "svg") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "pictures" + path.sep + "svg") + " folder made"));
 
 		mkdirp(path.join(dataPath, "audio" + path.sep + "prepositions")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio" + path.sep + "prepositions") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "audio" + path.sep + "prepositions") + " folder made"));
 
 		mkdirp(path.join(dataPath, "audio" + path.sep + "opposites")).then(made =>
-			log_and_reply(event,path.join(dataPath, "audio" + path.sep + "opposites") + " folder made"));
+			log_and_reply(event, path.join(dataPath, "audio" + path.sep + "opposites") + " folder made"));
 
-		log_and_reply(event,"try remove temp words2.json");
+		log_and_reply(event, "try remove temp words2.json");
 		try {
 			fs.unlinkSync(path.join(dataPath, "words2.json"));
 		} catch (err) {
-			log_and_reply(event,err);
+			log_and_reply(event, err);
 		}
 
 
 		// DownloadManager.register({downloadFolder: dataPath});
 
-		log_and_reply(event,"download opposites.json");
+		log_and_reply(event, "download opposites.json");
 		download("https://elosoft.tw/picture-dictionary-editor/opposites.json", path.join(dataPath, "opposites.json"), function () {
-			log_and_reply(event,"finished downloading opposites.json");
+			log_and_reply(event, "finished downloading opposites.json");
 		});
 
 
-		log_and_reply(event,"download words.json");
-			download("https://elosoft.tw/picture-dictionary-editor/dictionary/data.php", path.join(dataPath, "words2.json"), function () {
+		log_and_reply(event, "download words.json");
+		download("https://elosoft.tw/picture-dictionary-editor/dictionary/data.php", path.join(dataPath, "words2.json"), function () {
 
 			if (fs.existsSync(path.join(dataPath, "words2.json"))) {
 
 				fs.copyFile(path.join(dataPath, "words2.json"), path.join(dataPath, "words.json"), (err) => {
 					if (err) throw err;
-					log_and_reply(event,'words2.json was copied to words.json');
+					log_and_reply(event, 'words2.json was copied to words.json');
 
 					fs.readFile(path.join(dataPath, 'words.json'), 'utf-8', (err, data) => {
 						if (err) throw err;
@@ -211,12 +225,12 @@ function createWindow() {
 									var file_data = fs.readFileSync(path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture));
 									var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
 									if (file_hash !== SingleWordsJSON.picture_hash) {
-										log_and_reply(event,SingleWordsJSON.picture + " changed. Downloading...");
+										log_and_reply(event, SingleWordsJSON.picture + " changed. Downloading...");
 										download("https://elosoft.tw/picture-dictionary-editor/pictures/" + SingleWordsJSON.picture, path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture), function (err) {
 											if (err) {
-												log_and_reply(event,err);
+												log_and_reply(event, err);
 											}
-											log_and_reply(event,SingleWordsJSON.picture + " downloaded.");
+											log_and_reply(event, SingleWordsJSON.picture + " downloaded.");
 											callback();
 										});
 									}
@@ -225,12 +239,12 @@ function createWindow() {
 									}
 								}
 								else if (!fs.existsSync(path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture))) {
-									log_and_reply(event,SingleWordsJSON.picture + " not found. Downloading...");
+									log_and_reply(event, SingleWordsJSON.picture + " not found. Downloading...");
 									download("https://elosoft.tw/picture-dictionary-editor/pictures/" + SingleWordsJSON.picture, path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture), function (err) {
 										if (err) {
-											log_and_reply(event,err);
+											log_and_reply(event, err);
 										}
-										log_and_reply(event,SingleWordsJSON.picture + " downloaded.");
+										log_and_reply(event, SingleWordsJSON.picture + " downloaded.");
 										callback();
 									});
 								}
@@ -241,8 +255,8 @@ function createWindow() {
 							else {
 								callback();
 							}
-						},function () {
-							log_and_reply(event,"pictures download finished.");
+						}, function () {
+							log_and_reply(event, "pictures download finished.");
 						});
 
 
@@ -253,12 +267,12 @@ function createWindow() {
 									var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR));
 									var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
 									if (file_hash !== SingleWordsJSON.audio_tr_hash) {
-										log_and_reply(event,SingleWordsJSON.audio_TR + " changed. Downloading...");
+										log_and_reply(event, SingleWordsJSON.audio_TR + " changed. Downloading...");
 										download("https://elosoft.tw/picture-dictionary-editor/audio/tr/" + SingleWordsJSON.audio_TR, path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR), function (err) {
 											if (err) {
-												log_and_reply(event,err);
+												log_and_reply(event, err);
 											}
-											log_and_reply(event,SingleWordsJSON.audio_TR + " downloaded.");
+											log_and_reply(event, SingleWordsJSON.audio_TR + " downloaded.");
 											callback();
 										});
 									}
@@ -267,12 +281,12 @@ function createWindow() {
 									}
 								}
 								else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR))) {
-									log_and_reply(event,SingleWordsJSON.audio_TR + " not found. Downloading...");
+									log_and_reply(event, SingleWordsJSON.audio_TR + " not found. Downloading...");
 									download("https://elosoft.tw/picture-dictionary-editor/audio/tr/" + SingleWordsJSON.audio_TR, path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR), function (err) {
 										if (err) {
-											log_and_reply(event,err);
+											log_and_reply(event, err);
 										}
-										log_and_reply(event,SingleWordsJSON.audio_TR + " downloaded.");
+										log_and_reply(event, SingleWordsJSON.audio_TR + " downloaded.");
 										callback();
 									});
 								}
@@ -283,8 +297,8 @@ function createWindow() {
 							else {
 								callback();
 							}
-						},function () {
-							log_and_reply(event,"audio tr download finished.");
+						}, function () {
+							log_and_reply(event, "audio tr download finished.");
 						});
 
 						async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
@@ -293,12 +307,12 @@ function createWindow() {
 									var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN));
 									var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
 									if (file_hash !== SingleWordsJSON.audio_en_hash) {
-										log_and_reply(event,SingleWordsJSON.audio_EN + " not found. Downloading...");
+										log_and_reply(event, SingleWordsJSON.audio_EN + " not found. Downloading...");
 										download("https://elosoft.tw/picture-dictionary-editor/audio/en/" + SingleWordsJSON.audio_EN, path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN), function (err) {
 											if (err) {
-												log_and_reply(event,err);
+												log_and_reply(event, err);
 											}
-											log_and_reply(event,SingleWordsJSON.audio_EN + " downloaded.");
+											log_and_reply(event, SingleWordsJSON.audio_EN + " downloaded.");
 											callback();
 										});
 									}
@@ -307,12 +321,12 @@ function createWindow() {
 									}
 								}
 								else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN))) {
-									log_and_reply(event,SingleWordsJSON.audio_EN + " not found. Downloading...");
+									log_and_reply(event, SingleWordsJSON.audio_EN + " not found. Downloading...");
 									download("https://elosoft.tw/picture-dictionary-editor/audio/en/" + SingleWordsJSON.audio_EN, path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN), function (err) {
 										if (err) {
-											log_and_reply(event,err);
+											log_and_reply(event, err);
 										}
-										log_and_reply(event,SingleWordsJSON.audio_EN + " downloaded.");
+										log_and_reply(event, SingleWordsJSON.audio_EN + " downloaded.");
 										callback();
 									});
 								}
@@ -323,8 +337,8 @@ function createWindow() {
 							else {
 								callback();
 							}
-						},function () {
-							log_and_reply(event,"audio en download finished.");
+						}, function () {
+							log_and_reply(event, "audio en download finished.");
 						});
 
 						async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
@@ -333,12 +347,12 @@ function createWindow() {
 									var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH));
 									var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
 									if (file_hash !== SingleWordsJSON.audio_ch_hash) {
-										log_and_reply(event,SingleWordsJSON.audio_CH + " changed. Downloading...");
+										log_and_reply(event, SingleWordsJSON.audio_CH + " changed. Downloading...");
 										download("https://elosoft.tw/picture-dictionary-editor/audio/ch/" + SingleWordsJSON.audio_CH, path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH), function (err) {
 											if (err) {
-												log_and_reply(event,err);
+												log_and_reply(event, err);
 											}
-											log_and_reply(event,SingleWordsJSON.audio_CH + " downloaded.");
+											log_and_reply(event, SingleWordsJSON.audio_CH + " downloaded.");
 											callback();
 										});
 									}
@@ -347,12 +361,12 @@ function createWindow() {
 									}
 								}
 								else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH))) {
-									log_and_reply(event,SingleWordsJSON.audio_CH + " not found. Downloading...");
+									log_and_reply(event, SingleWordsJSON.audio_CH + " not found. Downloading...");
 									download("https://elosoft.tw/picture-dictionary-editor/audio/ch/" + SingleWordsJSON.audio_CH, path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH), function (err) {
 										if (err) {
-											log_and_reply(event,err);
+											log_and_reply(event, err);
 										}
-										log_and_reply(event,SingleWordsJSON.audio_CH + " downloaded.");
+										log_and_reply(event, SingleWordsJSON.audio_CH + " downloaded.");
 										callback();
 									});
 								}
@@ -363,25 +377,25 @@ function createWindow() {
 							else {
 								callback();
 							}
-						},function () {
-							log_and_reply(event,"audio ch download finished.");
+						}, function () {
+							log_and_reply(event, "audio ch download finished.");
 						});
 					});
 				});
 			}
 			else {
-				log_and_reply(event,path.join(dataPath, "words2.json") + " cant be read error.");
+				log_and_reply(event, path.join(dataPath, "words2.json") + " cant be read error.");
 				// The check failed
 			}
 		});
 
-		log_and_reply(event,"downloading categories...");
+		log_and_reply(event, "downloading categories...");
 
-		log_and_reply(event,"try remove temp categories2.json");
+		log_and_reply(event, "try remove temp categories2.json");
 		try {
 			fs.unlinkSync(path.join(dataPath, "categories2.json"));
 		} catch (err) {
-			log_and_reply(event,err);
+			log_and_reply(event, err);
 		}
 
 
@@ -391,23 +405,23 @@ function createWindow() {
 
 				fs.copyFile(path.join(dataPath, "categories2.json"), path.join(dataPath, "categories.json"), (err) => {
 					if (err) throw err;
-					log_and_reply(event,path.join(dataPath, 'categories2.json') + ' was copied to ' + path.join(dataPath, 'categories.json'));
+					log_and_reply(event, path.join(dataPath, 'categories2.json') + ' was copied to ' + path.join(dataPath, 'categories.json'));
 
 					fs.readFile(path.join(dataPath, 'categories.json'), 'utf-8', (err, data) => {
 						if (err) throw err;
 						categoriesJSON = JSON.parse(data);
-						log_and_reply(event,"categories download finished.");
+						log_and_reply(event, "categories download finished.");
 //        console.log(categoriesJSON);
 					});
 				});
 			}
 			else {
-				log_and_reply(event,path.join(dataPath, "categories2.json") + " cant be read error.");
+				log_and_reply(event, path.join(dataPath, "categories2.json") + " cant be read error.");
 				// The check failed
 			}
 		});
 
-		log_and_reply(event,'data refresh initiated.');
+		log_and_reply(event, 'data refresh initiated.');
 	});
 
 }
@@ -446,10 +460,9 @@ ipcMain.on('get-all-categories', (event, arg) => {
 })
 
 
-
 app.on('window-all-closed', () => {
 	// if (process.platform !== 'darwin') {
-		app.quit()
+	app.quit()
 	// }
 })
 
