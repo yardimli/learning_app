@@ -19,7 +19,12 @@
   <link rel="stylesheet" href="../css/normalize.css">
   <link rel="stylesheet" href="../css/skeleton.css">
   <link rel="stylesheet" href="../css/custom_ch.css">
-
+	<style>
+    @font-face {
+      font-family: 'hanwangmingboldregular';
+      src: url('../font/wp010-08.ttf') format('truetype');
+    }
+	</style>
 
 <!--  <script>-->
 <!--    const {ipcRenderer} = require('electron');-->
@@ -43,7 +48,7 @@
 <!--</head>-->
 <!--<body>-->
 
-<div class="container">
+<div class="container" style=' font-family: hanwangmingboldregular'>
   <!-- '&nbsp' is used as a placeholder to maintain the header's non-empty position. -->
   <!--    <section class="header">-->
   <!--        <h2 class="title" id="selectedLetter">&nbsp;</h2>-->
@@ -96,7 +101,7 @@
         <button class="keyboard-key" id="key-R-ch" data-mp3="/audio/letters/ch/letter_12_j.mp3">ㄐ</button>
         <button class="keyboard-key" id="key-T-ch" data-mp3="/audio/letters/ch/letter_16_zti.mp3">ㄔ</button>
         <button class="keyboard-key" id="key-Y-ch" data-mp3="/audio/letters/ch/letter_19_z.mp3">ㄗ</button>
-        <button class="keyboard-key" id="key-U-ch" data-mp3="/audio/letters/ch/letter_22_yi.mp3">ㄧ</button>
+        <button class="keyboard-key" id="key-U-ch" style=' font-family: hanwangmingboldregular' data-mp3="/audio/letters/ch/letter_22_yi.mp3">ㄧ</button>
         <button class="keyboard-key" id="key-I-ch" data-mp3="/audio/letters/ch/letter_26_o.mp3">ㄛ</button>
         <button class="keyboard-key" id="key-O-ch" data-mp3="/audio/letters/ch/letter_30_ei.mp3">ㄟ</button>
         <button class="keyboard-key" id="key-P-ch" data-mp3="/audio/letters/ch/letter_35_en.mp3">ㄣ</button>

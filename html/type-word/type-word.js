@@ -370,7 +370,7 @@ $(document).ready(function () {
 				});
 
 
-				$("#picture_box").append("<div data-id='" + (AlfaWords.length - 1) + "' class='word_select'><img src='poster://pictures/" + AllWordsData[i].picture + "' class='word_select_image'><div style='background-color: #ccc; font-family: hanwangmingboldregular; font-size: 20px;'>" + AllWordsData[i].word_CH + "</div><div style='background-color: #ddd;'>" + wordX + "</div></div>");
+				$("#picture_box").append("<div data-id='" + (AlfaWords.length - 1) + "' class='word_select'><img src='poster://pictures/" + AllWordsData[i].picture + "' class='word_select_image'><div style='background-color: #ccc; font-family: hanwangmingboldregular; font-size: 20px;'>" + AllWordsData[i].word_CH + "</div><div style='background-color: #ddd;  font-family: hanwangmingboldregular'>" + wordX + "</div></div>");
 
 			}
 		}
