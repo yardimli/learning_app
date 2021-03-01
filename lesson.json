@@ -439,7 +439,78 @@
     ]
   },
   {
-    "id": "7000",
+    "id": "5005",
+    "name": "Counting",
+    "description": "Count Objects and Use Keyboard",
+    "picture": "./lesson_pictures/counting_blog.png",
+    "screen_path": "html/counting/index.html",
+    "checkboxes_query": "hints",
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      }
+    ],
+    "options": [
+      {
+        "name": "Numbers, Keyboard and Cards",
+        "query": "type",
+        "value": "numbers_keyboard_and_cards"
+      },
+      {
+        "name": "Numbers and Keyboard",
+        "query": "type",
+        "value": "numbers_and_keyboard"
+      },
+      {
+        "name": "Only Numbers",
+        "query": "type",
+        "value": "only_numbers"
+      }
+    ],
+    "options2": [
+      {
+        "name": "1-5",
+        "query": "range",
+        "value": "5"
+      },
+      {
+        "name": "1-10",
+        "query": "range",
+        "value": "10"
+      },
+      {
+        "name": "1-20",
+        "query": "range",
+        "value": "20"
+      }
+    ],
+    "options3": [
+      {
+        "name": "10 Questions for Each Section",
+        "query": "length",
+        "value": "10"
+      },
+      {
+        "name": "20 Questions for Each Section",
+        "query": "length",
+        "value": "20"
+      }
+    ]
+  },
+  {
+    "id": "7005",
     "name": "Ceiling Fans",
     "description": "Learn numbers with spinning fans",
     "picture": "./lesson_pictures/1.png",
