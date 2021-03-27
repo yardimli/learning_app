@@ -20,6 +20,9 @@ var MaxFans;
 var WordHints;
 var RandomType;
 
+var SpeakLetter = "yes";
+var KeyboardSize = "large";
+
 
 function play_sound(mp3,playerid) {
   var AudioSrc = mp3;

@@ -378,8 +378,8 @@
   },
   {
     "id": "4004",
-    "name": "Type Words Chinese",
-    "description": "Type Letters",
+    "name": "Type Words",
+    "description": "Use Full Keyboard To Learn Typing",
     "picture": "./lesson_pictures/falling-letters.gif",
     "screen_path": "html/type-word/index.html",
     "checkboxes_query": "scoring",
@@ -417,12 +417,12 @@
         "value": "fromstring"
       },
       {
-        "name": "Predictive from selected words",
+        "name": "Predictive from selected",
         "query": "random",
         "value": "predictive_simple"
       },
       {
-        "name": "Predictive from all words in categories",
+        "name": "Predictive from categories",
         "query": "random",
         "value": "predictive_full"
       },
@@ -436,7 +436,38 @@
         "query": "random",
         "value": "singleletter"
       }
-    ]
+    ],
+    "options2": [
+      {
+        "name": "Large Keyboard",
+        "value": "large",
+        "query": "keyboard_size"
+      },
+      {
+        "name": "Medium Keyboard",
+        "value": "Medium",
+        "query": "keyboard_size"
+      },
+      {
+        "name": "Small Keyboard",
+        "value": "small",
+        "query": "keyboard_size"
+      }
+    ],
+    "options3": [
+    {
+      "name": "Speak Letters",
+      "query": "speak_letters",
+      "value": "yes"
+    },
+    {
+      "name": "Don't Speak Letters",
+      "query": "speak_letters",
+      "value": "no"
+    }
+  ]
+
+
   },
   {
     "id": "5005",

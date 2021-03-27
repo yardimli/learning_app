@@ -85,7 +85,9 @@ function init_keyboard() {
 				var event = new CustomEvent("virtual-keyboard-press", {detail: {"key": $(this).text()}});
 				document.dispatchEvent(event);
 
-				play_sound("../../" + $(this).data("mp3"), "media_audio2");
+				if (SpeakLetters==="yes") {
+					play_sound("../../" + $(this).data("mp3"), "media_audio2");
+				}
 
 				$(".keyboard-key").css({"opacity": 0.2});
 				WaitForRelease = true;

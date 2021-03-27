@@ -22,6 +22,9 @@ var CorrectAnswerBoolean = false;
 var CurrentLessonType = 1;
 var CorrectAnswerValue = "";
 
+var SpeakLetter = "yes";
+var KeyboardSize = "large";
+
 //-----------------------------------------------------------------------------------------------------------
 function play_sound(mp3, playerid, pause_play) {
   var AudioSrc = mp3;

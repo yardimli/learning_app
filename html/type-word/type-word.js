@@ -23,6 +23,8 @@ var LessonParameters;
 var LessonKeyboardRandom;
 var LessonLanguage;
 var LessonCategory;
+var KeyboardSize;
+var SpeakLetters;
 
 var CurrentlyTypedString = "";
 
@@ -156,7 +158,7 @@ function CreateLesson(ArrayID) {
 		var KeyboardActiveKeys = "";
 		$(".word_selected").each(function () {
 			console.log($(this).data("id"))
-			KeyboardActiveKeys += AlfaWords[parseInt($(this).data("id"), 10)].word;
+			KeyboardActiveKeys += AlfaWords[parseInt($(this).data("id"), 10)].word[0];
 		}).promise().done(function () {
 			var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
 			update_keyboard(unique, CorrectKey, 20000)
@@ -256,7 +258,7 @@ function CorrectAnswer(InputKey) {
 				$("#WordSuggestionsForLesson").html("");
 				var KeyboardActiveKeys = "";
 				var WordsAdded = [];
-				$(".word_select").each(function () {
+				$(".word_selected").each(function () {
 					// console.log($(this).data("id"));
 					let WordX = AlfaWords[parseInt($(this).data("id"), 10)].word;
 					if (WordX.indexOf(CurrentlyTypedString) === 0 && WordsAdded.indexOf(WordX) === -1) {
@@ -308,11 +310,28 @@ function CorrectAnswer(InputKey) {
 }
 
 $(document).ready(function () {
+
+	if (LessonLanguage === "tr") {
+		$("#WordSuggestionsForLesson").css({"font-family":"Arial"});
+		$("#WordsForLesson").css({"font-family":"Arial"});
+	}
+	if (LessonLanguage === "en") {
+		$("#WordSuggestionsForLesson").css({"font-family":"Arial"});
+		$("#WordsForLesson").css({"font-family":"Arial"});
+	}
+	if (LessonLanguage === "ch") {
+		$("#WordSuggestionsForLesson").css({"font-family":"hanwangmingboldregular"});
+		$("#WordsForLesson").css({"font-family":"hanwangmingboldregular"});
+	}
+
 	LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');
 
 	LessonKeyboardRandom = LessonParameters["random"];
 	LessonLanguage = LessonParameters["language"];
 	LessonCategory = LessonParameters["category"];
+	KeyboardSize = LessonParameters["keyboard_size"];
+	SpeakLetters = LessonParameters["speak_letters"];
+
 
 	AllWordsData = JSON.parse(window.sendSyncCmd('get-all-words', ''));
 
@@ -388,7 +407,7 @@ $(document).ready(function () {
 	$("#ballons").hide();
 
 
-	var KeyboardPath = "../keyboard/mini_" + LessonLanguage + "_keyboard.html";
+	var KeyboardPath = "../keyboard/mini_" + LessonLanguage + "_keyboard_"+ KeyboardSize +".html";
 
 	$.ajax({
 		url: KeyboardPath,
