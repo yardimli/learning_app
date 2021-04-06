@@ -28,6 +28,8 @@ var SpeakLetters;
 
 var CurrentlyTypedString = "";
 
+var AddWordToEndOfList = false;
+
 $.fn.shuffleChildren = function () {
 	$.each(this.get(), function (index, el) {
 		var $el = $(el);
@@ -120,6 +122,7 @@ function getRandomColor() {
 }
 
 function CreateLesson(ArrayID) {
+	AddWordToEndOfList = false;
 
 	clearTimeout(Timeout1);
 	clearTimeout(Timeout2);
@@ -296,6 +299,15 @@ function CorrectAnswer(InputKey) {
 		}
 	}
 	else { //wrong letter pressed
+
+		if (!AddWordToEndOfList) {
+
+			$("#picture_box").append("<div data-id='" +$(".word_selected:eq(" + (LessonProgress - 1) + ")").data("id") + "' class='word_select word_selected'><div style='background-color: #ccc;'>REPEAT WORD</div></div>");
+//			$("#picture_box").append( )
+			LessonLength = $(".word_selected").length;
+			AddWordToEndOfList = true;
+		}
+
 		console.log("Wrong Letter: " + InputKey);
 		Timeout8 = setTimeout(function () {
 //              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
