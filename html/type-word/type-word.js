@@ -25,6 +25,7 @@ var LessonLanguage;
 var LessonCategory;
 var KeyboardSize;
 var SpeakLetters;
+var LessonRedoWrongAnswers = "yes";
 
 var CurrentlyTypedString = "";
 
@@ -123,6 +124,7 @@ function getRandomColor() {
 
 function CreateLesson(ArrayID) {
 	AddWordToEndOfList = false;
+	show_keyboard();
 
 	clearTimeout(Timeout1);
 	clearTimeout(Timeout2);
@@ -168,6 +170,18 @@ function CreateLesson(ArrayID) {
 		});
 
 	}
+	if (LessonKeyboardRandom === "predictive_full") {
+
+		var KeyboardActiveKeys = "";
+		$(".word_select").each(function () {
+			console.log($(this).data("id"))
+			KeyboardActiveKeys += AlfaWords[parseInt($(this).data("id"), 10)].word[0];
+		}).promise().done(function () {
+			var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
+			update_keyboard(unique, CorrectKey, 20000)
+		});
+
+	}
 	else if (LessonKeyboardRandom === "fromstring") {
 		var unique = LessonString.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
 
@@ -188,22 +202,23 @@ function CorrectWordEntered() {
 		play_sound(CorrectWordAudio, "media_audio", false);
 	}, 1000);
 
-	Timeout3 = setTimeout(function () {
-		play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
-		$("#ballons").show();
-		$("#ballons").addClass("balloons_hide");
+	let BallonTimeout = 3000;
+	if (!AddWordToEndOfList) {
+		Timeout3 = setTimeout(function () {
+			play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
+			$("#ballons").show();
+			$("#ballons").addClass("balloons_hide");
 
-	}, 3000);
-
-
-	let BallonTimeout = 6000;
+		}, 3000);
+		BallonTimeout = 6000;
+	}
 
 	Timeout4 = setTimeout(function () {
 		if (LessonProgress >= LessonLength) {
 			alert("Lesson Finished!");
 		}
 		else {
-			$("#WordSuggestionsForLesson").css({"bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
+			$("#WordSuggestionsForLesson").css({"position":"absolute", "bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
 			$("#WordSuggestionsForLesson").html("");
 			$("#WordsForLesson").html("");
 			CurrentlyTypedString = "";
@@ -257,7 +272,7 @@ function CorrectAnswer(InputKey) {
 
 			if (LessonKeyboardRandom === "predictive_simple") {
 
-				$("#WordSuggestionsForLesson").css({"bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
+				$("#WordSuggestionsForLesson").css({"position":"absolute", "bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
 				$("#WordSuggestionsForLesson").html("");
 				var KeyboardActiveKeys = "";
 				var WordsAdded = [];
@@ -273,6 +288,12 @@ function CorrectAnswer(InputKey) {
 						KeyboardActiveKeys += WordX[ CurrentlyTypedString.length ];
 					}
 				}).promise().done(function () {
+
+					if (WordsAdded.length<=4) {
+						hide_keyboard();
+						$("#WordSuggestionsForLesson").css({"bottom": "100px", "position":"fixed"});
+					}
+
 					var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
 					update_keyboard(unique, CorrectKey, 20000);
 					$(".WordSuggestion").off('click touchstart').on('click touchstart',function () {
@@ -281,6 +302,91 @@ function CorrectAnswer(InputKey) {
 							$("#WordSuggestionsForLesson").html("<div class='btn btn-primary' style='display: inline-block; font-size: 32px; margin-right: 10px;'>"+ CorrectWordString +"</div>");
 							$("#WordsForLesson").html(CorrectWordString);
 							CorrectWordEntered();
+						} else
+						{
+
+							if (!AddWordToEndOfList && LessonRedoWrongAnswers==="yes") {
+
+								blink_correct_keyboard_key();
+
+								$("#picture_box").append("<div data-id='" +$(".word_selected:eq(" + (LessonProgress - 1) + ")").data("id") + "' class='word_select word_selected'><div style='background-color: #ccc;'>REPEAT WORD</div></div>");
+//			$("#picture_box").append( )
+								LessonLength = $(".word_selected").length;
+								AddWordToEndOfList = true;
+							}
+
+							console.log("Wrong Letter: " + InputKey);
+							Timeout8 = setTimeout(function () {
+//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
+								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
+							}, 700);
+
+							Timeout9 = setTimeout(function () {
+//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
+								play_sound(CorrectWordAudio, "media_audio", false);
+							}, 1700);
+
+						}
+					});
+				});
+
+			}
+			if (LessonKeyboardRandom === "predictive_full") {
+
+				$("#WordSuggestionsForLesson").css({"position":"absolute", "bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
+				$("#WordSuggestionsForLesson").html("");
+				var KeyboardActiveKeys = "";
+				var WordsAdded = [];
+				$(".word_select").each(function () {
+					// console.log($(this).data("id"));
+					let WordX = AlfaWords[parseInt($(this).data("id"), 10)].word;
+					if (WordX.indexOf(CurrentlyTypedString) === 0 && WordsAdded.indexOf(WordX) === -1) {
+						console.log(" possible word: "+WordX+" ("+CurrentlyTypedString+"), key option: "+WordX[ CurrentlyTypedString.length ]);
+
+						WordsAdded.push( WordX );
+						$("#WordSuggestionsForLesson").append("<div class='btn btn-primary WordSuggestion' style='display: inline-block; font-size: 32px; margin-right: 10px;'>"+ WordX +"</div>");
+
+						KeyboardActiveKeys += WordX[ CurrentlyTypedString.length ];
+					}
+				}).promise().done(function () {
+
+					if (WordsAdded.length<=4) {
+						hide_keyboard();
+						$("#WordSuggestionsForLesson").css({"bottom": "100px", "position":"fixed"});
+					}
+
+					var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
+					update_keyboard(unique, CorrectKey, 20000);
+					$(".WordSuggestion").off('click touchstart').on('click touchstart',function () {
+						console.log ($(this).html()+" "+$(this).text());
+						if ($(this).text() === CorrectWordString) {
+							$("#WordSuggestionsForLesson").html("<div class='btn btn-primary' style='display: inline-block; font-size: 32px; margin-right: 10px;'>"+ CorrectWordString +"</div>");
+							$("#WordsForLesson").html(CorrectWordString);
+							CorrectWordEntered();
+						} else
+						{
+
+							if (!AddWordToEndOfList && LessonRedoWrongAnswers==="yes") {
+
+								blink_correct_keyboard_key();
+
+								$("#picture_box").append("<div data-id='" +$(".word_selected:eq(" + (LessonProgress - 1) + ")").data("id") + "' class='word_select word_selected'><div style='background-color: #ccc;'>REPEAT WORD</div></div>");
+//			$("#picture_box").append( )
+								LessonLength = $(".word_selected").length;
+								AddWordToEndOfList = true;
+							}
+
+							console.log("Wrong Letter: " + InputKey);
+							Timeout8 = setTimeout(function () {
+//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
+								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
+							}, 700);
+
+							Timeout9 = setTimeout(function () {
+//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
+								play_sound(CorrectWordAudio, "media_audio", false);
+							}, 1700);
+
 						}
 					});
 				});
@@ -300,7 +406,10 @@ function CorrectAnswer(InputKey) {
 	}
 	else { //wrong letter pressed
 
-		if (!AddWordToEndOfList) {
+
+		if (!AddWordToEndOfList && LessonRedoWrongAnswers==="yes") {
+
+			blink_correct_keyboard_key();
 
 			$("#picture_box").append("<div data-id='" +$(".word_selected:eq(" + (LessonProgress - 1) + ")").data("id") + "' class='word_select word_selected'><div style='background-color: #ccc;'>REPEAT WORD</div></div>");
 //			$("#picture_box").append( )
@@ -323,6 +432,20 @@ function CorrectAnswer(InputKey) {
 
 $(document).ready(function () {
 
+	LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');
+
+	LessonKeyboardRandom = LessonParameters["random"];
+	LessonLanguage = LessonParameters["language"];
+	LessonCategory = LessonParameters["category"];
+	KeyboardSize = LessonParameters["keyboard_size"];
+	SpeakLetters = LessonParameters["speak_letters"];
+
+	LessonRedoWrongAnswers = LessonParameters["redo_wrong_answers"];
+
+	if (typeof LessonRedoWrongAnswers === "undefined") {
+		LessonRedoWrongAnswers = "yes";
+	}
+
 	if (LessonLanguage === "tr") {
 		$("#WordSuggestionsForLesson").css({"font-family":"Arial"});
 		$("#WordsForLesson").css({"font-family":"Arial"});
@@ -336,18 +459,10 @@ $(document).ready(function () {
 		$("#WordsForLesson").css({"font-family":"hanwangmingboldregular"});
 	}
 
-	LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');
-
-	LessonKeyboardRandom = LessonParameters["random"];
-	LessonLanguage = LessonParameters["language"];
-	LessonCategory = LessonParameters["category"];
-	KeyboardSize = LessonParameters["keyboard_size"];
-	SpeakLetters = LessonParameters["speak_letters"];
-
 
 	AllWordsData = JSON.parse(window.sendSyncCmd('get-all-words', ''));
 
-	$("#WordSuggestionsForLesson").css({"bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
+	$("#WordSuggestionsForLesson").css({"position":"absolute", "bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
 
 	console.log(AllWordsData.length);
 
@@ -475,7 +590,7 @@ $(document).ready(function () {
 		$("#picture_box").hide();
 		LessonLength = $(".word_selected").length;
 		$("#WordsForLesson").html("");
-		$("#WordSuggestionsForLesson").css({"bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
+		$("#WordSuggestionsForLesson").css({"position":"absolute", "bottom": ($("#WordsForLesson").outerHeight()+5) + "px"});
 		$("#WordSuggestionsForLesson").html("");
 		CurrentlyTypedString = "";
 

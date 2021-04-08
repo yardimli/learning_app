@@ -30,6 +30,8 @@ var LessonParameters;
 var LessonLength;
 var LessonLanguage;
 var LessonCategory;
+var LessonRedoWrongAnswers = "yes";
+var AddWordToEndOfList = false;
 
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
@@ -296,13 +298,9 @@ function CreateWordBoard() {
 	GuessPictureSpellingLesson = true;
 	GuessPictureSpellingFirstPlay = true;
 	GuessPictureFirstCorrect = "";
+	AddWordToEndOfList = false;
 
 	var WordList = "";
-
-	var WordX = AlfaWords[CurrentWordCardArrayPos].word.toLocaleUpperCase('tr-TR');
-	if (LowerCaseCard) {
-		WordX = capitalize(AlfaWords[CurrentWordCardArrayPos].word);
-	}
 
 	CurrentWordCardArrayPos++;
 	GuessPictureCorrectWordAudio = "poster://audio/" + LessonLanguage + "/" + AlfaWords[CurrentWordCardArrayPos].audio;
@@ -543,6 +541,13 @@ var _listener = function (playerid) {
 					}
 				}
 				else {
+
+					if (!AddWordToEndOfList && LessonRedoWrongAnswers) {
+						AddWordToEndOfList = true;
+						AlfaWords.push(AlfaWords[CurrentWordCardArrayPos]);
+						LessonLength++;
+					}
+
 					$("#CorrectWordContainer").fadeOut();
 					play_sound("../../audio/wrong-sound/yanlis-15.mp3", "media_audio2", false);
 					setTimeout(function () {
@@ -719,6 +724,8 @@ $(document).ready(function () {
 	LessonLength =  parseInt(LessonParameters["word_count"], 10);
 	LessonLanguage = LessonParameters["language"];
 	LessonCategory = LessonParameters["category"];
+	LessonRedoWrongAnswers = LessonParameters["redo_wrong_answers"];
+
 
 	AllWordsData = JSON.parse(window.sendSyncCmd('get-all-words', ''));
 

@@ -236,15 +236,13 @@
     "description": "Memory Game",
     "picture": "./lesson_pictures/memory-oyunu-big.jpg",
     "screen_path": "html/memory-game/index.html",
-    "checkboxes_query": "scoring",
-    "checkboxes": [
+    "buttons" : [
       {
-        "name": "Keep Score",
-        "value": "Yes"
-      },
-      {
-        "name": "Don't Keep Score",
-        "value": "No"
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
       }
     ],
     "lessons": [
@@ -271,16 +269,22 @@
     "description": "Flash Kart Oyunu",
     "picture": "./lesson_pictures/flash_cards.jpg",
     "screen_path": "html/flash-cards/index.html",
-    "checkboxes_query": "scoring",
-    "checkboxes": [
+    "buttons" : [
       {
-        "name": "Keep Score",
-        "value": "Yes"
+        "true_name" : "Redo wrong answers",
+        "false_name" : "Do not redo wrong answers",
+        "query" : "redo_wrong_answers",
+        "true_value" : "yes",
+        "false_value" : "no"
       },
       {
-        "name": "Don't Keep Score",
-        "value": "No"
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
       }
+
     ],
     "lessons": [
     {
@@ -346,16 +350,22 @@
     "description": "Karsitlar",
     "picture": "./lesson_pictures/opposites.png",
     "screen_path": "html/opposites/index.html",
-    "checkboxes_query": "scoring",
-    "checkboxes": [
+    "buttons" : [
       {
-        "name": "Keep Score",
-        "value": "Yes"
+        "true_name" : "Redo wrong answers",
+        "false_name" : "Do not redo wrong answers",
+        "query" : "redo_wrong_answers",
+        "true_value" : "yes",
+        "false_value" : "no"
       },
       {
-        "name": "Don't Keep Score",
-        "value": "No"
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
       }
+
     ],
     "lessons": [
       {
@@ -382,16 +392,22 @@
     "description": "Use Full Keyboard To Learn Typing",
     "picture": "./lesson_pictures/falling-letters.gif",
     "screen_path": "html/type-word/index.html",
-    "checkboxes_query": "scoring",
-    "checkboxes": [
+    "buttons" : [
       {
-        "name": "Keep Score",
-        "value": "Yes"
+        "true_name" : "Redo wrong answers",
+        "false_name" : "Do not redo wrong answers",
+        "query" : "redo_wrong_answers",
+        "true_value" : "yes",
+        "false_value" : "no"
       },
       {
-        "name": "Don't Keep Score",
-        "value": "No"
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
       }
+
     ],
     "lessons": [
       {
@@ -475,7 +491,16 @@
     "description": "Count Objects and Use Keyboard",
     "picture": "./lesson_pictures/counting_blog.png",
     "screen_path": "html/counting/index.html",
-    "checkboxes_query": "hints",
+    "buttons" : [
+      {
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
+      }
+
+    ],
     "lessons": [
       {
         "name": "Turkish",
@@ -546,12 +571,23 @@
     "description": "Learn numbers with spinning fans",
     "picture": "./lesson_pictures/1.png",
     "screen_path": "html/fans/index.html",
-    "checkboxes_query": "hints",
-    "checkboxes": [
+
+    "buttons" : [
       {
-        "name": "hints",
-        "value": "yes"
+        "true_name" : "Shows hints",
+        "false_name" : "Do not show hints",
+        "query" : "hints",
+        "true_value" : "yes",
+        "false_value" : "no"
+      },
+      {
+        "true_name" : "Keep score",
+        "false_name" : "Do not keep score",
+        "query" : "scoring",
+        "true_value" : "yes",
+        "false_value" : "no"
       }
+
     ],
     "lessons": [
       {

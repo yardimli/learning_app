@@ -11,12 +11,32 @@ var correct_key = "";
 var blink_delay = 1000;
 var BlinkTimer;
 var WaitForRelease = false;
+var current_correct_key = "";
 
 var zoomCount = 0;
 
 var old_data = {"keys": "", "blink_delay": 100000, "correct_key": "?"};
 
+function hide_keyboard() {
+	$(".keyboard").hide();
+}
+
+function show_keyboard() {
+	$(".keyboard").show();
+}
+
+function blink_correct_keyboard_key() {
+	clearTimeout(BlinkTimer);
+	$('.keyboard-key').each(function (i, obj) {
+		if ($(this).text() === current_correct_key) {
+			$(this).addClass("blink_keyboard_key");
+		}
+	});
+
+}
+
 function update_keyboard(Keyboard_Keys, Correct_Key, Blink_Delay) {
+	current_correct_key = Correct_Key;
 	if (Keyboard_Keys !== old_data.keys || Correct_Key !== old_data.correct_key || Blink_Delay !== old_data.blink_delay) {
 		Blink_Delay = parseInt(Blink_Delay, 10);
 
