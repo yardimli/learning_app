@@ -125,6 +125,7 @@ function getRandomColor() {
 function CreateLesson(ArrayID) {
 	AddWordToEndOfList = false;
 	show_keyboard();
+	$("#WordSuggestionsForLesson").show();
 
 	clearTimeout(Timeout1);
 	clearTimeout(Timeout2);
@@ -197,6 +198,8 @@ function CreateLesson(ArrayID) {
 }
 
 function CorrectWordEntered() {
+	$("#WordSuggestionsForLesson").hide();
+
 	update_keyboard("", "1", 10000);
 	Timeout2 = setTimeout(function () {
 		play_sound(CorrectWordAudio, "media_audio", false);
@@ -204,6 +207,8 @@ function CorrectWordEntered() {
 
 	let BallonTimeout = 3000;
 	if (!AddWordToEndOfList) {
+		report_lesson("type_words "+LessonKeyboardRandom, LessonLanguage, CorrectWordString, 1);
+
 		Timeout3 = setTimeout(function () {
 			play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
 			$("#ballons").show();
@@ -211,6 +216,9 @@ function CorrectWordEntered() {
 
 		}, 3000);
 		BallonTimeout = 6000;
+	} else
+	{
+		report_lesson("type_words "+LessonKeyboardRandom, LessonLanguage, CorrectWordString, 0);
 	}
 
 	Timeout4 = setTimeout(function () {
@@ -291,7 +299,7 @@ function CorrectAnswer(InputKey) {
 
 					if (WordsAdded.length<=4) {
 						hide_keyboard();
-						$("#WordSuggestionsForLesson").css({"bottom": "100px", "position":"fixed"});
+						$("#WordSuggestionsForLesson").css({"bottom": "200px", "position":"fixed"});
 					}
 
 					var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');

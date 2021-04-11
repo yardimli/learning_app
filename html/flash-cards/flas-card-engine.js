@@ -499,6 +499,7 @@ var _listener = function (playerid) {
 					$("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
 
 					if (GuessPictureFirstCorrect) {
+            report_lesson("flash_cards", LessonLanguage, AlfaWords[CurrentWordCardArrayPos].word, 1);
 
 						play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
 
@@ -525,6 +526,8 @@ var _listener = function (playerid) {
 						}, 3000);
 					}
 					else {
+            report_lesson("flash_cards", LessonLanguage, AlfaWords[CurrentWordCardArrayPos].word, 0);
+
 						play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 10) + 1) + ".mp3", "media_audio2", false);
 
 						setTimeout(function () {
