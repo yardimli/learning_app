@@ -1,3 +1,5 @@
+var backspace_enabled = true;
+
 function isAlphanumericKey(keycode) {
 	return (keycode >= 48) && (keycode <= 90);
 }
@@ -72,6 +74,11 @@ function update_keyboard(Keyboard_Keys, Correct_Key, Blink_Delay) {
 						$(this).addClass("can_press");
 					}
 				});
+
+				if (backspace_enabled) {
+					$("#key-backspace").css({"opacity": 1});
+					$("#key-backspace").addClass("can_press");
+				}
 			}
 		}
 	}
@@ -107,6 +114,9 @@ function init_keyboard() {
 
 				if (SpeakLetters==="yes") {
 					play_sound("../../" + $(this).data("mp3"), "media_audio2");
+				} else
+				{
+					play_sound("../../audio/click/click1.mp3", "media_audio2");
 				}
 
 				$(".keyboard-key").css({"opacity": 0.2});

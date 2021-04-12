@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Type Word</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="../css/balloons.css" rel="stylesheet">
+	<link href="../css/type-talk.css" rel="stylesheet">
+
+	<style>
+    @font-face {
+      font-family: 'hanwangmingboldregular';
+      src: url('../font/wp010-08.ttf') format('truetype');
+    }
+	</style>
+
+	<!-- Insert this line above script imports  -->
+	<script>if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+  }</script>
+
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/report_ajax.js"></script>
+
+	<script src="type-talk.js"></script>
+
+
+	<!-- Insert this line after script imports -->
+	<script>if (window.module) module = window.module;</script>
+
+</head>
+
+<body>
+<div id="top-half">
+
+	<div id="ch_hint" style="position:absolute; top:20px; left:20px; background-color: white; border: 1px solid #ccc; padding: 3px; display: none;"></div>
+
+	<div id="WordSuggestionsForLesson"
+	     style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.2); right:0px; min-height:30px; padding:10px;overflow-y: hidden; overflow-x: hidden; white-space: nowrap; font-family: hanwangmingboldregular"></div>
+
+	<div id="sentence_div" style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.5); right:0px; min-height:30px; padding:5px; ">
+		<div id="SentenceTextDiv" class="sentence" style="display: inline-block; font-size: 50px; font-family: hanwangmingboldregular; margin-right:15px;"></div>
+		<div id="WordsForLesson" class="writer" style="display: inline-block; font-size: 50px; font-family: hanwangmingboldregular"></div>
+	</div>
+</div>
+<div id="bottom-half" style="overflow: hidden; height: 50vh;">
+</div>
+
+
+<audio preload="none" id="media_audio">
+	<source id="media_audio_source" src="" type="audio/mpeg">
+</audio>
+
+<audio preload="none" id="media_audio2">
+	<source id="media_audio2_source" src="" type="audio/mpeg">
+</audio>
+
+</body>
+
+</html>

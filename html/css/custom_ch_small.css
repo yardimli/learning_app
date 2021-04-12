@@ -1,8 +1,7 @@
-/*
-* Custom CSS stylesheet for TalkingAlphabet's elements
-* By Aaron Gaba
-*/
-
+.backspace-key {
+    border:0px !important;
+    padding:0px !important;
+}
 
 .container {
     width: 1280px; 
