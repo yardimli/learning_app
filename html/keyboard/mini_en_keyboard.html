@@ -1,61 +1,14 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--	&lt;!&ndash; Basic Page Needs-->
-<!--–––––––––––––––––––––––––––––––––––––––––––––––––– &ndash;&gt;-->
-<!--	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>-->
-<!--	<meta charset="utf-8">-->
-<!--	<title>TalkingKeyboard</title>-->
-
-<!--	&lt;!&ndash; Mobile Specific Metas-->
-<!--	–––––––––––––––––––––––––––––––––––––––––––––––––– &ndash;&gt;-->
-<!--	<meta name="viewport" content="width=device-width, initial-scale=1">-->
-
-	<!-- FONT
-	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
-	<!-- CSS
-	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link rel="stylesheet" href="../css/normalize.css">
 	<link rel="stylesheet" href="../css/skeleton.css">
 	<link rel="stylesheet" href="../css/custom_tr.css">
 
 
-<!--	<script>-->
-<!--		const {ipcRenderer} = require('electron');-->
-<!--	</script>-->
-
-<!--	&lt;!&ndash; Insert this line above script imports  &ndash;&gt;-->
-<!--	<script>if (typeof module === 'object') {-->
-<!--		window.module = module;-->
-<!--		module = undefined;-->
-<!--	}</script>-->
-
-
-	<!-- Scripts
-	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<!--	<script src="../js/jquery.min.js"></script>-->
 	<script src="../keyboard/talking_keyboard.js"></script>
 
-<!--	&lt;!&ndash; Insert this line after script imports &ndash;&gt;-->
-<!--	<script>if (window.module) module = window.module;</script>-->
-
-<!--</head>-->
-<!--<script language="JavaScript">-->
-<!--	document.oncontextmenu =new Function("return false;")-->
-<!--</script>-->
-<!--<body onselectstart="return false">-->
 
 <div class="container">
-	<!-- '&nbsp' is used as a placeholder to maintain the header's non-empty position. -->
-	<!--    <section class="header">-->
-	<!--        <h2 class="title" id="selectedLetter">&nbsp;</h2>-->
-	<!--    </section>-->
-
-	<!--     <div style="text-align:center; margin-bottom: 5px;">
-			Instructions: Type or click on an alphanumeric key to hear it.</div>
-	 -->
 	<div class="keyboard" id="TR_KEY">
 		<hr>
 
@@ -71,7 +24,7 @@
 				<button class="keyboard-key" id="key-8" data-mp3="/audio/letters/en/8.mp3">8</button>
 				<button class="keyboard-key" id="key-9" data-mp3="/audio/letters/en/9.mp3">9</button>
 				<button class="keyboard-key" id="key-0" data-mp3="/audio/letters/en/0.mp3">0</button>
-<button class="keyboard-key backspace-key" id="key-backspace" data-mp3=""><img src="../keyboard/backspace.png" id="backspace_key" style="height:60px;"><span style="display:none">|</span></button>
+<button class="keyboard-key backspace-key" id="key-backspace" data-mp3=""><img src="../../pictures/icons/backspace.png" id="backspace_key"><span style="display:none">|</span></button>
 			</div>
 		</div>
 
@@ -137,9 +90,3 @@
 
 </div>
 
-<!--<audio preload="none" id="media_audio">-->
-<!--	<source id="media_audio_source" src="" type="audio/mpeg">-->
-<!--</audio>-->
-
-<!--</body>-->
-<!--</html>-->

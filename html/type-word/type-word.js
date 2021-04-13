@@ -610,7 +610,7 @@ $(document).ready(function () {
 	});
 
 	document.addEventListener("virtual-keyboard-press", function (event) {
-		if (event.detail.key !== "" && LessonProgress > 0) {
+		if (event.detail.key !== "" && event.detail.key !== "|" && LessonProgress > 0) {
 			CorrectAnswer(event.detail.key);
 		}
 	});

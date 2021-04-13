@@ -17,10 +17,10 @@
 	<link href="../css/type-talk.css" rel="stylesheet">
 
 	<style>
-    @font-face {
-      font-family: 'hanwangmingboldregular';
-      src: url('../font/wp010-08.ttf') format('truetype');
-    }
+		@font-face {
+			font-family: 'hanwangmingboldregular';
+			src: url('../font/wp010-08.ttf') format('truetype');
+		}
 	</style>
 
 	<!-- Insert this line above script imports  -->
@@ -44,17 +44,32 @@
 <body>
 <div id="top-half">
 
-	<div id="ch_hint" style="position:absolute; top:20px; left:20px; background-color: white; border: 1px solid #ccc; padding: 3px; display: none;"></div>
+	<div id="contorl_bar"
+	     style="position: absolute; top:0px; left:0px; color:white; background-color: rgba(0,0,0,0.1); right:0px; min-height:75px; padding:10px;overflow-y: hidden; overflow-x: hidden; white-space: nowrap;">
+
+		<div id="keyboard_size" class="top_menu_button btn btn-warning"style=""><img src="../../pictures/icons/resize.png" style="height: 45px;"></div>
+
+		<div id="turkish_keyboard" class="top_menu_button btn btn-primary"><img src="../../pictures/icons/keyboard.png" style="height: 35px;">Türkçe</div>
+		<div id="english_keyboard" class="top_menu_button btn btn-primary"><img src="../../pictures/icons/keyboard.png" style="height: 35px;">English</div>
+		<div id="chinese_keyboard" class="top_menu_button btn btn-danger"><img src="../../pictures/icons/keyboard.png" style="height: 35px;">中文</div>
+
+
+
+		<div id="speak_sentence" class="top_menu_button btn btn-warning" style="margin-left: 120px; min-width: 200px;"><img src="../../pictures/icons/speaker.png" style="height: 45px;"></div>
+
+		<div id="delete_sentence" class="top_menu_button btn btn-warning"style="margin-left: 130px;"><img src="../../pictures/icons/delete.png" style="height: 45px;"></div>
+	</div>
+
 
 	<div id="WordSuggestionsForLesson"
-	     style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.2); right:0px; min-height:30px; padding:10px;overflow-y: hidden; overflow-x: hidden; white-space: nowrap; font-family: hanwangmingboldregular"></div>
+	     style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.2); right:0px; min-height:75px; padding:10px;overflow-y: hidden; overflow-x: hidden; white-space: nowrap; font-family: hanwangmingboldregular"></div>
 
-	<div id="sentence_div" style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.5); right:0px; min-height:30px; padding:5px; ">
-		<div id="SentenceTextDiv" class="sentence" style="display: inline-block; font-size: 50px; font-family: hanwangmingboldregular; margin-right:15px;"></div>
-		<div id="WordsForLesson" class="writer" style="display: inline-block; font-size: 50px; font-family: hanwangmingboldregular"></div>
+	<div id="sentence_div" style="position: absolute; bottom:0px; left:0px; color:white; background-color: rgba(0,0,0,0.5); right:0px; min-height:75px; padding:5px; ">
+		<div id="SentenceTextDiv" class="sentence" style="display: inline-block; font-size: 50px; margin-right:15px;"></div>
+		<div id="WordsForLesson" class="writer" style="display: inline-block; font-size: 50px;"></div>
 	</div>
 </div>
-<div id="bottom-half" style="overflow: hidden; height: 50vh;">
+<div id="bottom-half">
 </div>
 
 
