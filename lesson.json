@@ -5,22 +5,21 @@
     "description": "Use Full Keyboard To Learn Typing",
     "picture": "./lesson_pictures/falling-letters.gif",
     "screen_path": "html/type-word/index.html",
-    "buttons" : [
+    "buttons": [
       {
-        "true_name" : "Redo wrong answers",
-        "false_name" : "Do not redo wrong answers",
-        "query" : "redo_wrong_answers",
-        "true_value" : "yes",
-        "false_value" : "no"
+        "true_name": "Redo wrong answers",
+        "false_name": "Do not redo wrong answers",
+        "query": "redo_wrong_answers",
+        "true_value": "yes",
+        "false_value": "no"
       },
       {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
       }
-
     ],
     "lessons": [
       {
@@ -95,8 +94,6 @@
         "value": "no"
       }
     ]
-
-
   },
   {
     "id": "3000",
@@ -104,22 +101,21 @@
     "description": "Flash Kart Oyunu",
     "picture": "./lesson_pictures/flash_cards.jpg",
     "screen_path": "html/flash-cards/index.html",
-    "buttons" : [
+    "buttons": [
       {
-        "true_name" : "Redo wrong answers",
-        "false_name" : "Do not redo wrong answers",
-        "query" : "redo_wrong_answers",
-        "true_value" : "yes",
-        "false_value" : "no"
+        "true_name": "Redo wrong answers",
+        "false_name": "Do not redo wrong answers",
+        "query": "redo_wrong_answers",
+        "true_value": "yes",
+        "false_value": "no"
       },
       {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
       }
-
     ],
     "lessons": [
       {
@@ -177,9 +173,7 @@
         "value": "6"
       }
     ]
-
   },
-
   {
     "id": "9000",
     "name": "Keyboard",
@@ -187,22 +181,20 @@
     "picture": "./lesson_pictures/keyboard.png",
     "screen_path": "html/type-talk/index.html"
   },
-
   {
     "id": "5005",
     "name": "Counting",
     "description": "Count Objects and Use Keyboard",
     "picture": "./lesson_pictures/counting_blog.png",
     "screen_path": "html/counting/index.html",
-    "buttons" : [
+    "buttons": [
       {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
       }
-
     ],
     "lessons": [
       {
@@ -263,6 +255,259 @@
       },
       {
         "name": "20 Questions for Each Section",
+        "query": "length",
+        "value": "20"
+      }
+    ]
+  },
+  {
+    "id": "5015",
+    "name": "Addition and Subtraction",
+    "description": "Learn to Add and Subtract",
+    "picture": "./lesson_pictures/math.png",
+    "screen_path": "html/math_one/index.html",
+    "buttons": [
+      {
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
+      },
+      {
+        "true_name": "Redo wrong answers",
+        "false_name": "Do not redo wrong answers",
+        "query": "redo_wrong_answers",
+        "true_value": "yes",
+        "false_value": "no"
+      }
+    ],
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      }
+    ],
+    "options": [
+      {
+        "name": "Addition",
+        "query": "type",
+        "value": "addition"
+      },
+      {
+        "name": "Subtraction",
+        "query": "type",
+        "value": "subtraction"
+      },
+      {
+        "name": "Both",
+        "query": "type",
+        "value": "both"
+      }
+    ],
+    "options2": [
+      {
+        "name": "1-5",
+        "query": "range",
+        "value": "5"
+      },
+      {
+        "name": "1-10",
+        "query": "range",
+        "value": "10"
+      },
+      {
+        "name": "1-20",
+        "query": "range",
+        "value": "20"
+      }
+    ]
+  },
+  {
+    "id": "2000",
+    "name": "Memory",
+    "description": "Memory Game",
+    "picture": "./lesson_pictures/memory-oyunu-big.jpg",
+    "screen_path": "html/memory-game/index.html",
+    "buttons": [
+      {
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
+      }
+    ],
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      }
+    ]
+  },
+  {
+    "id": "3500",
+    "name": "Opposites",
+    "description": "Karsitlar",
+    "picture": "./lesson_pictures/opposites.png",
+    "screen_path": "html/opposites/index.html",
+    "buttons": [
+      {
+        "true_name": "Redo wrong answers",
+        "false_name": "Do not redo wrong answers",
+        "query": "redo_wrong_answers",
+        "true_value": "yes",
+        "false_value": "no"
+      },
+      {
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
+      }
+    ],
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      }
+    ]
+  },
+  {
+    "id": "7005",
+    "name": "Ceiling Fans",
+    "description": "Learn numbers with spinning fans",
+    "picture": "./lesson_pictures/1.png",
+    "screen_path": "html/fans/index.html",
+    "buttons": [
+      {
+        "true_name": "Shows hints",
+        "false_name": "Do not show hints",
+        "query": "hints",
+        "true_value": "yes",
+        "false_value": "no"
+      },
+      {
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
+      }
+    ],
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      }
+    ],
+    "options": [
+      {
+        "name": "Fan Numbers 3",
+        "query": "max_fans",
+        "value": "3"
+      },
+      {
+        "name": "Fan Numbers 4",
+        "query": "max_fans",
+        "value": "4"
+      },
+      {
+        "name": "Fan Numbers 5",
+        "query": "max_fans",
+        "value": "5"
+      },
+      {
+        "name": "Fan Numbers 6",
+        "query": "max_fans",
+        "value": "6"
+      },
+      {
+        "name": "Fan Numbers 7",
+        "query": "max_fans",
+        "value": "7"
+      },
+      {
+        "name": "Fan Numbers 8",
+        "query": "max_fans",
+        "value": "8"
+      },
+      {
+        "name": "Fan Numbers 9",
+        "query": "max_fans",
+        "value": "9"
+      }
+    ],
+    "options2": [
+      {
+        "name": "Sequential Random",
+        "query": "random",
+        "value": "sequential"
+      },
+      {
+        "name": "One Random Extra",
+        "query": "random",
+        "value": "one_more"
+      },
+      {
+        "name": "On Both Sides",
+        "query": "random",
+        "value": "two_more"
+      }
+    ],
+    "options3": [
+      {
+        "name": "10 Questions",
+        "query": "length",
+        "value": "10"
+      },
+      {
+        "name": "20 Questions",
         "query": "length",
         "value": "20"
       }
@@ -496,189 +741,6 @@
         "name": "5 of each Letter",
         "query": "length",
         "value": "5"
-      }
-    ]
-  },
-  {
-    "id": "2000",
-    "name": "Memory",
-    "description": "Memory Game",
-    "picture": "./lesson_pictures/memory-oyunu-big.jpg",
-    "screen_path": "html/memory-game/index.html",
-    "buttons" : [
-      {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
-      }
-    ],
-    "lessons": [
-      {
-        "name": "Turkish",
-        "query": "language",
-        "value": "tr"
-      },
-      {
-        "name": "English",
-        "query": "language",
-        "value": "en"
-      },
-      {
-        "name": "Chinese",
-        "query": "language",
-        "value": "ch"
-      }
-    ]
-  },
-  {
-    "id": "3500",
-    "name": "Opposites",
-    "description": "Karsitlar",
-    "picture": "./lesson_pictures/opposites.png",
-    "screen_path": "html/opposites/index.html",
-    "buttons" : [
-      {
-        "true_name" : "Redo wrong answers",
-        "false_name" : "Do not redo wrong answers",
-        "query" : "redo_wrong_answers",
-        "true_value" : "yes",
-        "false_value" : "no"
-      },
-      {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
-      }
-
-    ],
-    "lessons": [
-      {
-        "name": "Turkish",
-        "query": "language",
-        "value": "tr"
-      },
-      {
-        "name": "English",
-        "query": "language",
-        "value": "en"
-      },
-      {
-        "name": "Chinese",
-        "query": "language",
-        "value": "ch"
-      }
-    ]
-
-  },
-  {
-    "id": "7005",
-    "name": "Ceiling Fans",
-    "description": "Learn numbers with spinning fans",
-    "picture": "./lesson_pictures/1.png",
-    "screen_path": "html/fans/index.html",
-
-    "buttons" : [
-      {
-        "true_name" : "Shows hints",
-        "false_name" : "Do not show hints",
-        "query" : "hints",
-        "true_value" : "yes",
-        "false_value" : "no"
-      },
-      {
-        "true_name" : "Keep score",
-        "false_name" : "Do not keep score",
-        "query" : "scoring",
-        "true_value" : "yes",
-        "false_value" : "no"
-      }
-
-    ],
-    "lessons": [
-      {
-        "name": "Turkish",
-        "query": "language",
-        "value": "tr"
-      },
-      {
-        "name": "Chinese",
-        "query": "language",
-        "value": "ch"
-      },
-      {
-        "name": "English",
-        "query": "language",
-        "value": "en"
-      }
-    ],
-    "options": [
-      {
-        "name": "Fan Numbers 3",
-        "query": "max_fans",
-        "value": "3"
-      },
-      {
-        "name": "Fan Numbers 4",
-        "query": "max_fans",
-        "value": "4"
-      },
-      {
-        "name": "Fan Numbers 5",
-        "query": "max_fans",
-        "value": "5"
-      },
-      {
-        "name": "Fan Numbers 6",
-        "query": "max_fans",
-        "value": "6"
-      },
-      {
-        "name": "Fan Numbers 7",
-        "query": "max_fans",
-        "value": "7"
-      },
-      {
-        "name": "Fan Numbers 8",
-        "query": "max_fans",
-        "value": "8"
-      },
-      {
-        "name": "Fan Numbers 9",
-        "query": "max_fans",
-        "value": "9"
-      }
-    ],
-    "options2": [
-      {
-        "name": "Sequential Random",
-        "query": "random",
-        "value": "sequential"
-      },
-      {
-        "name": "One Random Extra",
-        "query": "random",
-        "value": "one_more"
-      },
-      {
-        "name": "On Both Sides",
-        "query": "random",
-        "value": "two_more"
-      }
-    ],
-    "options3": [
-      {
-        "name": "10 Questions",
-        "query": "length",
-        "value": "10"
-      },
-      {
-        "name": "20 Questions",
-        "query": "length",
-        "value": "20"
       }
     ]
   }

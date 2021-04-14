@@ -42,7 +42,7 @@ function readOpposites() {
 	else {
 		data = "{}";
 	}
-	data
+	return data
 }
 
 function readCategories() {
