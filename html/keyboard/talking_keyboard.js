@@ -40,6 +40,8 @@ function blink_correct_keyboard_key() {
 
 function update_keyboard(Keyboard_Keys, Correct_Key, Blink_Delay) {
   current_correct_key = Correct_Key;
+  console.log("update keyboard: "+Keyboard_Keys+" - "+Correct_Key+" - "+Blink_Delay);
+  console.log(old_data);
   if (Keyboard_Keys !== old_data.keys || Correct_Key !== old_data.correct_key || Blink_Delay !== old_data.blink_delay) {
     Blink_Delay = parseInt(Blink_Delay, 10);
 
@@ -76,12 +78,15 @@ function update_keyboard(Keyboard_Keys, Correct_Key, Blink_Delay) {
           }
         });
 
-        if (backspace_enabled) {
+        if (backspace_enabled && Keyboard_Keys!=="") {
           $("#key-backspace").css({"opacity": 1});
           $("#key-backspace").addClass("can_press");
         }
       }
     }
+  } else
+  {
+    console.log("update keyboard failed!");
   }
 }
 
@@ -108,13 +113,18 @@ function init_keyboard() {
     // Upon mouse-down, if letter is enabled or all speak the letter.
     mousedown: function () {
       console.log($(this));
+      console.log($(this).hasClass("can_press")+" - " + WaitForRelease );
       if ($(this).hasClass("can_press") && !WaitForRelease) {
 
         var event = new CustomEvent("virtual-keyboard-press", {detail: {"key": $(this).text()}});
         document.dispatchEvent(event);
 
         if (SpeakLetters === "yes") {
-          play_sound("../../" + $(this).data("mp3"), "media_audio2", false);
+          if ($(this).data("mp3")==="" || $(this).data("mp3")===null) {
+            play_sound("../../audio/click/click1.mp3", "media_audio2", false);
+          } else {
+            play_sound("../../" + $(this).data("mp3"), "media_audio2", false);
+          }
         }
         else {
           play_sound("../../audio/click/click1.mp3", "media_audio2", false);

@@ -15,8 +15,14 @@ var CorrectAnswerBoolean = false;
 var CurrentLessonType = 1;
 var CorrectAnswerValue = "";
 
+var MathProblemsArray = [];
+
+var MathLessonArray = [];
+
 var SpeakLetter = "yes";
 var KeyboardSize = "large";
+
+var duck_template = "";
 
 //-----------------------------------------------------------------------------------------------------------
 function play_sound(mp3, playerid, pause_play) {
@@ -298,6 +304,62 @@ function CreateCountingBoard() {
 
 }
 
+function duck_string(number_of_ducks) {
+
+  var text_align = "center";
+  if (number_of_ducks >= 5) {
+    text_align = "left;"
+  }
+  var ducks_string = "<div style='width:300px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
+  for (var i = 0; i < number_of_ducks; i++) {
+    ducks_string += "<img src='" + duck_template.src + "' style='width:50px; margin-right:10px; margin-bottom: 10px; vertical-align: top; ' />";
+  }
+  ducks_string += "</div>";
+  return ducks_string;
+}
+
+function AskMathQuestion(QuestionNumber) {
+  $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
+  console.log(MathLessonArray[QuestionNumber]);
+
+  duck_template = shuffle($(".target")).slice(0, 1)[0]; // document.getElementsByClassName("target")[0];
+  console.log(duck_template);
+
+  $("#MathQuestionDiv").html("");
+
+//  $("#MathQuestionDiv").html(MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = <br>");
+
+
+  $("#MathQuestionDiv").append("<div style='display: inline-block;  '><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string(MathLessonArray[QuestionNumber].a) +
+    "</div>"
+  );
+
+  if (MathLessonArray[QuestionNumber].operator === "plus") {
+    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>+</div>");
+  }
+
+  if (MathLessonArray[QuestionNumber].operator === "minus") {
+    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>-</div>");
+  }
+
+  $("#MathQuestionDiv").append("<div style='display: inline-block; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string(MathLessonArray[QuestionNumber].b) +
+    "</div>"
+  );
+
+  $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>=</div>");
+
+  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum) +
+    "</div>"
+  );
+
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
 function CorrectAnswer() {
   LessonProgress++;
 
@@ -335,44 +397,84 @@ $(document).ready(function () {
     LessonRange = parseInt(LessonParameters["range"], 10);
     CurrentLessonType = 1;
 
-    if (LessonType === "only_numbers") {
-      LessonLength = LessonSectionLength;
+    var LoopTop = 10;
+    if (LessonRange === 5 || LessonRange === 10) {
+      LoopTop = 10;
     }
-
-    if (LessonType === "numbers_and_keyboard") {
-      LessonLength = LessonSectionLength * 2;
-    }
-
-    var LoopTop=10;
-    if (LessonRange===5 || LessonRange === 10) {
-      LoopTop=10;
-    }
-    if (LessonRange===20) {
+    if (LessonRange === 20) {
       LoopTop = 20;
     }
 
+
     if (LessonType === "addition" || LessonType === "both") {
+      MathProblemsArray = [];
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
           if (i + j <= LessonRange) {
-            console.log(i + " + " + j + " = " + (i + j));
+            MathProblemsArray.push({"a": i, "b": j, "operator": "plus", "sum": (i + j)});
+          }
+        }
+      }
+
+      if (LessonSectionLength === 1000) {
+        // ask all math problems in the order created so will fill MathLessonArray later
+      }
+      else {
+        while (MathLessonArray.length < LessonSectionLength) {
+          j = getRandomInt(0, MathProblemsArray.length - 1);
+          if (getRandomInt(0, 100) > 80) {
+            MathLessonArray.push(MathProblemsArray[j]);
           }
         }
       }
     }
 
     if (LessonType === "subtraction" || LessonType === "both") {
+      if (LessonSectionLength === 1000) {
+        // ask all math problems in the order created so will fill MathLessonArray later
+      }
+      else {
+        MathProblemsArray = [];
+      }
+
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
           if (i - j <= LessonRange && (i - j >= 0)) {
-            console.log(i + " - " + j + " = " + (i - j));
+            MathProblemsArray.push({"a": i, "b": j, "operator": "minus", "sum": (i - j)});
+          }
+        }
+      }
+
+      if (LessonSectionLength === 1000) {
+        // ask all math problems in the order created so will fill MathLessonArray later
+      }
+      else {
+        var temp_max_length = LessonSectionLength;
+        if (LessonType === "both") {
+          temp_max_length = LessonSectionLength * 2;
+        }
+
+        while (MathLessonArray.length < temp_max_length) {
+          j = getRandomInt(0, MathProblemsArray.length - 1);
+          if (getRandomInt(0, 100) > 80) {
+            MathLessonArray.push(MathProblemsArray[j]);
           }
         }
       }
     }
 
+    if (LessonSectionLength === 1000) {
+      MathLessonArray = MathProblemsArray;
+    }
+    LessonLength = MathLessonArray.length;
+
+    console.log(MathLessonArray);
+    console.log(MathLessonArray.length);
+
 
     $("#ObjectsContainer").height($("#top-half").height() + "px");
+
+    AskMathQuestion(LessonProgress);
 
     $(document).on("contextmenu", function (e) {
       return false;
@@ -386,6 +488,8 @@ $(document).ready(function () {
     );
 
     $("#skip_lesson").on('click', function () {
+      LessonProgress++;
+      AskMathQuestion(LessonProgress);
       // CreateWordBoard();
     });
 
@@ -397,50 +501,53 @@ $(document).ready(function () {
     $("#ballons").hide();
 
 
-    var KeyboardPath = "../keyboard/mini_" + LessonLanguage + "_keyboard.html";
+    if (1 === 2) {
 
-    $.ajax({
-      url: KeyboardPath,
-      success: function (data, status, jqXHR) {
+      var KeyboardPath = "../keyboard/mini_" + LessonLanguage + "_keyboard.html";
 
-        var dom = $(data);
+      $.ajax({
+        url: KeyboardPath,
+        success: function (data, status, jqXHR) {
 
-        dom.filter('script').each(function () {
-          if (this.src) {
-            var script = document.createElement('script'), i, attrName, attrValue, attrs = this.attributes;
-            for (i = 0; i < attrs.length; i++) {
-              attrName = attrs[i].name;
-              attrValue = attrs[i].value;
-              script[attrName] = attrValue;
+          var dom = $(data);
+
+          dom.filter('script').each(function () {
+            if (this.src) {
+              var script = document.createElement('script'), i, attrName, attrValue, attrs = this.attributes;
+              for (i = 0; i < attrs.length; i++) {
+                attrName = attrs[i].name;
+                attrValue = attrs[i].value;
+                script[attrName] = attrValue;
+              }
+              document.body.appendChild(script);
             }
-            document.body.appendChild(script);
+            else {
+              $.globalEval(this.text || this.textContent || this.innerHTML || '');
+            }
+          });
+
+          $("#bottom-half").html(data);
+          init_keyboard();
+
+          if (CurrentLessonType === 1) {
+            CreateCountingBoard();
           }
-          else {
-            $.globalEval(this.text || this.textContent || this.innerHTML || '');
+          if (CurrentLessonType === 2) {
+            CreateCountingBoard();
           }
-        });
 
-        $("#bottom-half").html(data);
-        init_keyboard();
 
-        if (CurrentLessonType === 1) {
-          CreateCountingBoard();
         }
-        if (CurrentLessonType === 2) {
-          CreateCountingBoard();
+      });
+
+      document.addEventListener("virtual-keyboard-press", function (event) {
+        if (event.detail.key !== "") {
+          if (event.detail.key === CorrectAnswerValue) {
+            CorrectAnswer();
+          }
         }
-
-
-      }
-    });
-
-    document.addEventListener("virtual-keyboard-press", function (event) {
-      if (event.detail.key !== "") {
-        if (event.detail.key === CorrectAnswerValue) {
-          CorrectAnswer();
-        }
-      }
-    });
+      });
+    }
 
 
   }

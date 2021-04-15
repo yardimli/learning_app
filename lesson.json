@@ -332,6 +332,28 @@
         "query": "range",
         "value": "20"
       }
+    ],
+    "options3": [
+      {
+        "name": "10 Questions Each",
+        "query": "length",
+        "value": "10"
+      },
+      {
+        "name": "20 Questions Each",
+        "query": "length",
+        "value": "20"
+      },
+      {
+        "name": "30 Questions Each",
+        "query": "length",
+        "value": "30"
+      },
+      {
+        "name": "All Questions",
+        "query": "length",
+        "value": "1000"
+      }
     ]
   },
   {

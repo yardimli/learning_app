@@ -163,7 +163,7 @@ function CreateLesson(ArrayID) {
 
 		var KeyboardActiveKeys = "";
 		$(".word_selected").each(function () {
-			console.log($(this).data("id"))
+//			console.log($(this).data("id"))
 			KeyboardActiveKeys += AlfaWords[parseInt($(this).data("id"), 10)].word[0];
 		}).promise().done(function () {
 			var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
@@ -175,7 +175,7 @@ function CreateLesson(ArrayID) {
 
 		var KeyboardActiveKeys = "";
 		$(".word_select").each(function () {
-			console.log($(this).data("id"))
+//			console.log($(this).data("id"))
 			KeyboardActiveKeys += AlfaWords[parseInt($(this).data("id"), 10)].word[0];
 		}).promise().done(function () {
 			var unique = KeyboardActiveKeys.split('').filter(function (item, i, ar) { return ar.indexOf(item) === i; }).join('');
