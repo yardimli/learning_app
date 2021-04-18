@@ -9,6 +9,9 @@ var LessonLanguage;
 var LessonParameters;
 var LessonLength;
 var LessonSectionLength;
+var LessonRedoWrongAnswers = "yes";
+var AddQuestionAgainToEndOfList = false;
+
 var LessonType;
 var LessonRange;
 var CorrectAnswerBoolean = false;
@@ -23,6 +26,7 @@ var SpeakLetter = "yes";
 var KeyboardSize = "large";
 
 var duck_template = "";
+
 
 //-----------------------------------------------------------------------------------------------------------
 function play_sound(mp3, playerid, pause_play) {
@@ -167,22 +171,9 @@ var _listener = function (playerid) {
     media_audio2_playing = false;
   }
 
-
   if (playerid.target.id === "media_audio") {
     if (CorrectAnswerBoolean) {
       $("#ballons").hide();
-
-      if (CurrentLessonType === 1) {
-        CreateCountingBoard();
-      }
-
-      if (CurrentLessonType === 2) {
-        CreateCountingBoard();
-      }
-
-      if (CurrentLessonType === 3) {
-        CreateCardsBoards();
-      }
 
       CorrectAnswerBoolean = false;
       $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
@@ -200,6 +191,22 @@ function getRandomColor() {
   }
   return color;
 }
+
+
+//-----------------------------------------------------------------------------------------------------------
+$.fn.shuffleChildren = function () {
+  $.each(this.get(), function (index, el) {
+    var $el = $(el);
+    var $find = $el.children();
+
+    $find.sort(function () {
+      return 0.5 - Math.random();
+    });
+
+    $el.empty();
+    $find.appendTo($el);
+  });
+};
 
 
 //-----------------------------------------------------------------------------------------------------------
@@ -235,84 +242,15 @@ $.fn.randomize = function (selector) {
   return this;
 };
 
-
-function addClickCounter(ClickClass, ObjectContainer, CorrectCount, radius) {
-
-  $("." + ClickClass).on('click', function () {
-
-    if ($(this).hasClass(ClickClass + "_counted")) {
-
-    }
-    else {
-      var numItems = $('.' + ClickClass + '_counted').length + 1;
-
-      if (LessonLanguage === "tr") {
-        play_sound("../../audio/letters/tr/Default_" + numItems + ".wav", "media_audio");
-      }
-
-      if (LessonLanguage === "en") {
-        play_sound("../../audio/letters/en/" + numItems + ".mp3", "media_audio");
-      }
-
-      if (LessonLanguage === "ch") {
-        play_sound("../../audio/letters/ch/number_" + numItems + "_ch.mp3", "media_audio");
-      }
-
-
-      $(ObjectContainer).append("<div class='number_div' style='position: absolute; left:" + ($(this).position().left + ($(this).width() / 2) - radius) + "px; top:" + ($(this).position().top + ($(this).height() / 2) - radius) + "px; width:" + (radius * 2) + "px; height: " + (radius * 2) + "px; border-radius: " + radius + "px; border: 3px solid black; background-color: white; color:black; font-size: " + radius + "px; line-height: " + (radius * 2) + "px; text-align: center'>" + numItems + "</div>");
-      $(this).addClass(ClickClass + "_counted");
-
-      if (CorrectCount === numItems) {
-        CorrectAnswer();
-
-      }
-    }
-  });
-
-}
-
-//-----------------------------------------------------------------------------------------------------------
-function CreateCountingBoard() {
-  $("#ObjectsContainer").show();
-  $("#ObjectsContainer").html("");
-
-  if (CurrentLessonType === 1) {
-    $("#bottom-half").hide();
-    $("#top-half").css({"height": "100vh"});
-    $("#ObjectsContainer").height($("#top-half").height() + "px");
-
-  }
-  else if (CurrentLessonType === 2) {
-    $("#bottom-half").show();
-    $("#top-half").css({"height": "50vh"});
-    $("#ObjectsContainer").height($("#top-half").height() + "px");
-
-  }
-
-
-  play_sound("", "media_audio2", true);
-
-  var MaxBoxes = Math.floor(Math.random() * LessonRange) + 1;
-//  fill_shapes("#ObjectsContainer", MaxBoxes, "click_object");
-  MaxBoxes = $('.click_object').length;
-  CorrectAnswerValue = MaxBoxes + "";
-
-
-  update_keyboard("0123456789", CorrectAnswerValue, 20000);
-
-  addClickCounter("click_object", "#ObjectsContainer", MaxBoxes, 50);
-
-}
-
-function duck_string(number_of_ducks) {
+function duck_string(number_of_ducks, duck_width = 50) {
 
   var text_align = "center";
   if (number_of_ducks >= 5) {
     text_align = "left;"
   }
-  var ducks_string = "<div style='width:300px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
+  var ducks_string = "<div style='width:" + ((duck_width + 10) * 5) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
   for (var i = 0; i < number_of_ducks; i++) {
-    ducks_string += "<img src='" + duck_template.src + "' style='width:50px; margin-right:10px; margin-bottom: 10px; vertical-align: top; ' />";
+    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; margin-right:10px; margin-bottom: 10px; vertical-align: top; ' />";
   }
   ducks_string += "</div>";
   return ducks_string;
@@ -322,35 +260,192 @@ function AskMathQuestion(QuestionNumber) {
   $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
   console.log(MathLessonArray[QuestionNumber]);
 
+
+  AddQuestionAgainToEndOfList = false;
+
   duck_template = shuffle($(".target")).slice(0, 1)[0]; // document.getElementsByClassName("target")[0];
   console.log(duck_template);
 
   $("#MathQuestionDiv").html("");
+  $("#MathAnswersDiv").html("");
+  $("#MathAnswersDiv").show();
 
 //  $("#MathQuestionDiv").html(MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = <br>");
 
+  var audio_file = "";
+  var audio_file_correct = "";
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block;  '><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string(MathLessonArray[QuestionNumber].a) +
-    "</div>"
-  );
+  if (LessonLanguage === "en") {
+    if (MathLessonArray[QuestionNumber].operator === "plus") {
+      audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+
+    if (MathLessonArray[QuestionNumber].operator === "minus") {
+      audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+  }
+
+  if (LessonLanguage === "tr") {
+    if (MathLessonArray[QuestionNumber].operator === "plus") {
+      audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+
+    if (MathLessonArray[QuestionNumber].operator === "minus") {
+      audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+  }
+
+  if (LessonLanguage === "ch") {
+    if (MathLessonArray[QuestionNumber].operator === "plus") {
+      audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+
+    if (MathLessonArray[QuestionNumber].operator === "minus") {
+      audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
+      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+    }
+  }
+
+  play_sound("../../audio/" + audio_file, "media_audio");
+
+
+  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string(MathLessonArray[QuestionNumber].a) + "</div>");
 
   if (MathLessonArray[QuestionNumber].operator === "plus") {
-    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>+</div>");
+    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div class='text_style'>+</div>");
   }
 
   if (MathLessonArray[QuestionNumber].operator === "minus") {
-    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>-</div>");
+    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div class='text_style'>-</div>");
   }
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string(MathLessonArray[QuestionNumber].b) +
-    "</div>"
-  );
+  $("#MathQuestionDiv").append("<div style='display: inline-block; '><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string(MathLessonArray[QuestionNumber].b) + "</div>");
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div style='font-size: 100px; font-weight: bold; text-align: center;'>=</div>");
+  $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div  class='text_style'>=</div>");
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div style='font-size: 100px; font-weight: bold; text-align: center;'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum) +
-    "</div>"
-  );
+  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum) + "</div></div>");
+
+
+  $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 120) + "px"})
+
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum, 35) + "</div>";
+
+  $("#MathAnswersDiv").append(CorrectAnswerBlock);
+
+  var AllAnswers = [];
+
+  AllAnswers.push(parseInt(MathLessonArray[QuestionNumber].sum, 10));
+
+  for (var i = 0; i < 3; i++) {
+
+    var RandomWrongAnswer = getRandomInt(1, LessonRange);
+    while (AllAnswers.indexOf(RandomWrongAnswer) !== -1) {
+      RandomWrongAnswer = getRandomInt(1, LessonRange);
+    }
+    AllAnswers.push(RandomWrongAnswer);
+
+    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string(RandomWrongAnswer, 35) + "</div>";
+
+    $("#MathAnswersDiv").append(WrongAnswerBlock);
+  }
+
+  var heights = $(".answer_divs").map(function () {
+    return $(this).outerHeight();
+  }).get();
+
+  var maxHeight = Math.max.apply(null, heights);
+
+  $(".answer_divs").each(function () {
+    $(this).css({"height": maxHeight + "px"});
+  });
+
+
+  $("#MathAnswersDiv").shuffleChildren();
+
+  $(".answer_divs").on('mousedown', function () {
+
+    $(".answer_divs").removeClass("answer_divs_focus");
+    $(this).addClass("answer_divs_focus");
+
+    if (LessonLanguage === "tr") {
+      play_sound("../../audio/letters/tr/Default_" + $(this).data("card_number") + ".wav", "media_audio");
+    }
+
+    if (LessonLanguage === "en") {
+      play_sound("../../audio/letters/en/" + $(this).data("card_number") + ".mp3", "media_audio");
+    }
+
+    if (LessonLanguage === "ch") {
+      play_sound("../../audio/letters/ch/number_" + $(this).data("card_number") + "_ch.mp3", "media_audio");
+    }
+
+    if ($(this).data("is_correct") === "yes") {
+      $("#correct_answer_div").show();
+
+      var NextQuestionTimeout = 2000;
+
+      if (!AddQuestionAgainToEndOfList) {
+        $("#ballons").show();
+        $("#ballons").addClass("balloons_hide");
+        NextQuestionTimeout = 4000;
+
+        report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 1);
+
+        setTimeout(() => {
+          $(".answer_divs").removeClass("answer_divs_focus");
+          $("#MathAnswersDiv").fadeOut();
+          play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
+
+        }, 1000);
+      }
+      else {
+        report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 0);
+
+        setTimeout(() => {
+          play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
+        }, 1000);
+      }
+
+      setTimeout(function () {
+        $("#ballons").hide();
+        play_sound("", "media_audio2", true);
+
+        LessonProgress++;
+        AskMathQuestion(LessonProgress);
+
+      }, NextQuestionTimeout);
+    }
+    else {
+
+      if (!AddQuestionAgainToEndOfList && LessonRedoWrongAnswers) {
+        AddQuestionAgainToEndOfList = true;
+        MathLessonArray.push(MathLessonArray[QuestionNumber]);
+      }
+
+      setTimeout(() => {
+        $("#MathAnswersDiv").fadeOut();
+        $(".answer_divs").removeClass("answer_divs_focus");
+        $(".correct_answer").addClass("blink_corect_answer");
+        play_sound("../../audio/wrong-sound/yanlis-15.mp3", "media_audio2", false);
+        $("#correct_answer_div").show();
+
+        setTimeout(() => {
+          play_sound("../../audio/" + audio_file_correct, "media_audio");
+          $("#MathAnswersDiv").fadeIn();
+
+        }, 1000);
+
+      }, 1000);
+
+
+    }
+
+  });
 
 }
 
@@ -396,6 +491,7 @@ $(document).ready(function () {
     LessonType = LessonParameters["type"];
     LessonRange = parseInt(LessonParameters["range"], 10);
     CurrentLessonType = 1;
+    LessonRedoWrongAnswers = LessonParameters["redo_wrong_answers"];
 
     var LoopTop = 10;
     if (LessonRange === 5 || LessonRange === 10) {
@@ -499,55 +595,6 @@ $(document).ready(function () {
 
 
     $("#ballons").hide();
-
-
-    if (1 === 2) {
-
-      var KeyboardPath = "../keyboard/mini_" + LessonLanguage + "_keyboard.html";
-
-      $.ajax({
-        url: KeyboardPath,
-        success: function (data, status, jqXHR) {
-
-          var dom = $(data);
-
-          dom.filter('script').each(function () {
-            if (this.src) {
-              var script = document.createElement('script'), i, attrName, attrValue, attrs = this.attributes;
-              for (i = 0; i < attrs.length; i++) {
-                attrName = attrs[i].name;
-                attrValue = attrs[i].value;
-                script[attrName] = attrValue;
-              }
-              document.body.appendChild(script);
-            }
-            else {
-              $.globalEval(this.text || this.textContent || this.innerHTML || '');
-            }
-          });
-
-          $("#bottom-half").html(data);
-          init_keyboard();
-
-          if (CurrentLessonType === 1) {
-            CreateCountingBoard();
-          }
-          if (CurrentLessonType === 2) {
-            CreateCountingBoard();
-          }
-
-
-        }
-      });
-
-      document.addEventListener("virtual-keyboard-press", function (event) {
-        if (event.detail.key !== "") {
-          if (event.detail.key === CorrectAnswerValue) {
-            CorrectAnswer();
-          }
-        }
-      });
-    }
 
 
   }

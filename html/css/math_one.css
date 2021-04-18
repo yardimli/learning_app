@@ -1,0 +1,76 @@
+/*!
+ * Start Bootstrap - The Big Picture (https://startbootstrap.com/template-overviews/the-big-picture)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-the-big-picture/blob/master/LICENSE)
+ */
+body {
+  background: url('../../pictures/background/4.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+#top-half {
+  background: url('../../pictures/background/4.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  overflow: hidden;
+  height: 50vh;
+  position: relative;
+}
+
+.wrong_answer {
+  display: inline-block;
+  background-color: #ccc;
+  border-radius: 15px;
+  border: 1px solid #555;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.correct_answer {
+  display: inline-block;
+  background-color: #ccc;
+  border-radius: 15px;
+  border: 1px solid #555;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.text_style {
+  font-size: 100px;
+  font-weight: bold;
+  text-align: center;
+}
+
+@keyframes blink {
+  0% {
+    background-color: #ccc;
+  }
+  50% {
+    background-color: white;
+  }
+  100% {
+    background-color: #ccc;
+  }
+}
+
+
+.blink_corect_answer {
+  animation: blink 2s infinite;
+}
+
+.answer_divs {
+  cursor: pointer;
+}
+
+.answer_divs_focus {
+  background-color: #999;
+}
+
+#correct_answer_div {
+  display: none;
+}
