@@ -175,6 +175,7 @@ var _listener = function (playerid) {
     if (CorrectAnswerBoolean) {
       $("#ballons").hide();
 
+      LessonLength = MathLessonArray.length;
       CorrectAnswerBoolean = false;
       $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
     }
@@ -257,6 +258,7 @@ function duck_string(duck_id, number_of_ducks, duck_width = 40) {
 }
 
 function AskMathQuestion(QuestionNumber) {
+  LessonLength = MathLessonArray.length;
   $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
   console.log(MathLessonArray[QuestionNumber]);
 
@@ -314,7 +316,7 @@ function AskMathQuestion(QuestionNumber) {
   play_sound("../../audio/" + audio_file, "media_audio");
 
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a",MathLessonArray[QuestionNumber].a) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a) + "</div>");
 
   if (MathLessonArray[QuestionNumber].operator === "plus") {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>+</div>");
@@ -324,17 +326,17 @@ function AskMathQuestion(QuestionNumber) {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>-</div>");
   }
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b",MathLessonArray[QuestionNumber].b) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b) + "</div>");
 
   $("#MathQuestionDiv").append("<div class='question_div'><div  class='text_style'>=</div>");
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum",MathLessonArray[QuestionNumber].sum) + "</div></div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum", MathLessonArray[QuestionNumber].sum) + "</div></div>");
 
 
   var heights = $(".question_div").map(function () {
     return $(this).outerHeight();
   }).get();
-  console.log( heights);
+  console.log(heights);
 
   var maxHeight = Math.max.apply(null, heights);
 
@@ -345,7 +347,7 @@ function AskMathQuestion(QuestionNumber) {
 
   $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 70) + "px"})
 
-  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("",MathLessonArray[QuestionNumber].sum, 35) + "</div>";
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, 35) + "</div>";
 
   $("#MathAnswersDiv").append(CorrectAnswerBlock);
 
@@ -361,7 +363,7 @@ function AskMathQuestion(QuestionNumber) {
     }
     AllAnswers.push(RandomWrongAnswer);
 
-    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("",RandomWrongAnswer, 35) + "</div>";
+    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("", RandomWrongAnswer, 35) + "</div>";
 
     $("#MathAnswersDiv").append(WrongAnswerBlock);
   }
@@ -380,6 +382,11 @@ function AskMathQuestion(QuestionNumber) {
   $("#MathAnswersDiv").shuffleChildren();
 
   $(".answer_divs").on('mousedown', function () {
+    $(".answer_divs").removeClass("answer_divs_focus");
+    $(this).addClass("answer_divs_focus");
+  });
+
+  $(".answer_divs").on('click', function () {
 
     $(".answer_divs").removeClass("answer_divs_focus");
     $(this).addClass("answer_divs_focus");
@@ -402,7 +409,7 @@ function AskMathQuestion(QuestionNumber) {
 
         $("#correct_answer_div").addClass("is_answered");
 
-        $("#correct_answer_div").css({"opacity":1});
+        $("#correct_answer_div").css({"opacity": 1});
 
         var NextQuestionTimeout = 2000;
 
@@ -410,18 +417,24 @@ function AskMathQuestion(QuestionNumber) {
           $("#ballons").show();
           $("#ballons").addClass("balloons_hide");
           NextQuestionTimeout = 4000;
+          setTimeout(function () {
+            $("#MathAnswersDiv").fadeOut();
+          }, 250);
 
           report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 1);
 
           setTimeout(() => {
             $(".answer_divs").removeClass("answer_divs_focus");
-            $("#MathAnswersDiv").fadeOut();
             play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
 
           }, 1000);
         }
         else {
           report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 0);
+
+          setTimeout(function () {
+            $("#MathAnswersDiv").fadeOut();
+          }, 250);
 
           setTimeout(() => {
             play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
