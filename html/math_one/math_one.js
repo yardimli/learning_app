@@ -242,13 +242,13 @@ $.fn.randomize = function (selector) {
   return this;
 };
 
-function duck_string(number_of_ducks, duck_width = 50) {
+function duck_string(duck_id, number_of_ducks, duck_width = 40) {
 
   var text_align = "center";
   if (number_of_ducks >= 5) {
-    text_align = "left;"
+    text_align = "left"
   }
-  var ducks_string = "<div style='width:" + ((duck_width + 10) * 5) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
+  var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + 10) * 5) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
   for (var i = 0; i < number_of_ducks; i++) {
     ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; margin-right:10px; margin-bottom: 10px; vertical-align: top; ' />";
   }
@@ -314,26 +314,38 @@ function AskMathQuestion(QuestionNumber) {
   play_sound("../../audio/" + audio_file, "media_audio");
 
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string(MathLessonArray[QuestionNumber].a) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a",MathLessonArray[QuestionNumber].a) + "</div>");
 
   if (MathLessonArray[QuestionNumber].operator === "plus") {
-    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div class='text_style'>+</div>");
+    $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>+</div>");
   }
 
   if (MathLessonArray[QuestionNumber].operator === "minus") {
-    $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div class='text_style'>-</div>");
+    $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>-</div>");
   }
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block; '><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string(MathLessonArray[QuestionNumber].b) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b",MathLessonArray[QuestionNumber].b) + "</div>");
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block; vertical-align: top; '><div  class='text_style'>=</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div  class='text_style'>=</div>");
 
-  $("#MathQuestionDiv").append("<div style='display: inline-block;'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum) + "</div></div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum",MathLessonArray[QuestionNumber].sum) + "</div></div>");
 
 
-  $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 120) + "px"})
+  var heights = $(".question_div").map(function () {
+    return $(this).outerHeight();
+  }).get();
+  console.log( heights);
 
-  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string(MathLessonArray[QuestionNumber].sum, 35) + "</div>";
+  var maxHeight = Math.max.apply(null, heights);
+
+  $(".question_div").each(function () {
+    $(this).css({"height": maxHeight + "px"});
+  });
+
+
+  $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 70) + "px"})
+
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("",MathLessonArray[QuestionNumber].sum, 35) + "</div>";
 
   $("#MathAnswersDiv").append(CorrectAnswerBlock);
 
@@ -349,7 +361,7 @@ function AskMathQuestion(QuestionNumber) {
     }
     AllAnswers.push(RandomWrongAnswer);
 
-    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string(RandomWrongAnswer, 35) + "</div>";
+    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("",RandomWrongAnswer, 35) + "</div>";
 
     $("#MathAnswersDiv").append(WrongAnswerBlock);
   }
@@ -385,40 +397,46 @@ function AskMathQuestion(QuestionNumber) {
     }
 
     if ($(this).data("is_correct") === "yes") {
-      $("#correct_answer_div").show();
 
-      var NextQuestionTimeout = 2000;
+      if (!$("#correct_answer_div").hasClass("is_answered")) {
 
-      if (!AddQuestionAgainToEndOfList) {
-        $("#ballons").show();
-        $("#ballons").addClass("balloons_hide");
-        NextQuestionTimeout = 4000;
+        $("#correct_answer_div").addClass("is_answered");
 
-        report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 1);
+        $("#correct_answer_div").css({"opacity":1});
 
-        setTimeout(() => {
-          $(".answer_divs").removeClass("answer_divs_focus");
-          $("#MathAnswersDiv").fadeOut();
-          play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
+        var NextQuestionTimeout = 2000;
 
-        }, 1000);
+        if (!AddQuestionAgainToEndOfList) {
+          $("#ballons").show();
+          $("#ballons").addClass("balloons_hide");
+          NextQuestionTimeout = 4000;
+
+          report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 1);
+
+          setTimeout(() => {
+            $(".answer_divs").removeClass("answer_divs_focus");
+            $("#MathAnswersDiv").fadeOut();
+            play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
+
+          }, 1000);
+        }
+        else {
+          report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 0);
+
+          setTimeout(() => {
+            play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
+          }, 1000);
+        }
+
+        setTimeout(function () {
+          $("#ballons").hide();
+          play_sound("", "media_audio2", true);
+
+          LessonProgress++;
+          AskMathQuestion(LessonProgress);
+
+        }, NextQuestionTimeout);
       }
-      else {
-        report_lesson("math_one", LessonLanguage, MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = " + MathLessonArray[QuestionNumber].sum, 0);
-
-        setTimeout(() => {
-          play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
-        }, 1000);
-      }
-
-      setTimeout(function () {
-        $("#ballons").hide();
-        play_sound("", "media_audio2", true);
-
-        LessonProgress++;
-        AskMathQuestion(LessonProgress);
-
-      }, NextQuestionTimeout);
     }
     else {
 
@@ -428,15 +446,15 @@ function AskMathQuestion(QuestionNumber) {
       }
 
       setTimeout(() => {
-        $("#MathAnswersDiv").fadeOut();
+        // $("#MathAnswersDiv").fadeOut();
         $(".answer_divs").removeClass("answer_divs_focus");
         $(".correct_answer").addClass("blink_corect_answer");
         play_sound("../../audio/wrong-sound/yanlis-15.mp3", "media_audio2", false);
-        $("#correct_answer_div").show();
+        // $("#correct_answer_div").css({"opacity":1});
 
         setTimeout(() => {
           play_sound("../../audio/" + audio_file_correct, "media_audio");
-          $("#MathAnswersDiv").fadeIn();
+          // $("#MathAnswersDiv").fadeIn();
 
         }, 1000);
 
