@@ -331,6 +331,11 @@
         "name": "1-20",
         "query": "range",
         "value": "20"
+      },
+      {
+        "name": "1-30",
+        "query": "range",
+        "value": "30"
       }
     ],
     "options3": [

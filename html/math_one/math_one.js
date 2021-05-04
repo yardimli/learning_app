@@ -26,6 +26,9 @@ var SpeakLetter = "yes";
 var KeyboardSize = "large";
 
 var duck_template = "";
+var duck_row = 5;
+var duck_width_question = 40;
+var duck_width_answer = 35;
 
 
 //-----------------------------------------------------------------------------------------------------------
@@ -243,15 +246,21 @@ $.fn.randomize = function (selector) {
   return this;
 };
 
-function duck_string(duck_id, number_of_ducks, duck_width = 40) {
+function duck_string(duck_id, number_of_ducks, duck_width = 40, duck_row = 5) {
 
   var text_align = "center";
-  if (number_of_ducks >= 5) {
+  if (number_of_ducks >= duck_row) {
     text_align = "left"
   }
-  var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + 10) * 5) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
+
+  var duck_margin = 5;
+  if (duck_row < 10) {
+    duck_margin = 10;
+  }
+
+  var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + duck_margin) * duck_row) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
   for (var i = 0; i < number_of_ducks; i++) {
-    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; margin-right:10px; margin-bottom: 10px; vertical-align: top; ' />";
+    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; margin-right:" + duck_margin + "px; margin-bottom: 10px; vertical-align: top; ' />";
   }
   ducks_string += "</div>";
   return ducks_string;
@@ -280,43 +289,56 @@ function AskMathQuestion(QuestionNumber) {
   if (LessonLanguage === "en") {
     if (MathLessonArray[QuestionNumber].operator === "plus") {
       audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].sum + ".mp3";
     }
 
     if (MathLessonArray[QuestionNumber].operator === "minus") {
       audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
     }
   }
 
   if (LessonLanguage === "tr") {
     if (MathLessonArray[QuestionNumber].operator === "plus") {
       audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].sum + ".mp3";
     }
 
     if (MathLessonArray[QuestionNumber].operator === "minus") {
       audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].sum + ".mp3";
     }
   }
 
   if (LessonLanguage === "ch") {
     if (MathLessonArray[QuestionNumber].operator === "plus") {
       audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].sum + ".mp3";
     }
 
     if (MathLessonArray[QuestionNumber].operator === "minus") {
       audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+      // audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+
+      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].sum + ".mp3";
     }
   }
 
   play_sound("../../audio/" + audio_file, "media_audio");
 
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a, duck_width_question, duck_row) + "</div>");
 
   if (MathLessonArray[QuestionNumber].operator === "plus") {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>+</div>");
@@ -326,11 +348,11 @@ function AskMathQuestion(QuestionNumber) {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>-</div>");
   }
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b, duck_width_question, duck_row) + "</div>");
 
   $("#MathQuestionDiv").append("<div class='question_div'><div  class='text_style'>=</div>");
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum", MathLessonArray[QuestionNumber].sum) + "</div></div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum", MathLessonArray[QuestionNumber].sum, duck_width_question, duck_row) + "</div></div>");
 
 
   var heights = $(".question_div").map(function () {
@@ -347,7 +369,7 @@ function AskMathQuestion(QuestionNumber) {
 
   $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 70) + "px"})
 
-  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, 35) + "</div>";
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, duck_width_answer, duck_row) + "</div>";
 
   $("#MathAnswersDiv").append(CorrectAnswerBlock);
 
@@ -363,7 +385,7 @@ function AskMathQuestion(QuestionNumber) {
     }
     AllAnswers.push(RandomWrongAnswer);
 
-    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("", RandomWrongAnswer, 35) + "</div>";
+    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("", RandomWrongAnswer, duck_width_answer, duck_row) + "</div>";
 
     $("#MathAnswersDiv").append(WrongAnswerBlock);
   }
@@ -392,15 +414,19 @@ function AskMathQuestion(QuestionNumber) {
     $(this).addClass("answer_divs_focus");
 
     if (LessonLanguage === "tr") {
-      play_sound("../../audio/letters/tr/Default_" + $(this).data("card_number") + ".wav", "media_audio");
+      var audio_file_number = "/math/tr/" + $(this).data("card_number") + ".mp3";
+      play_sound("../../audio/" + audio_file_number, "media_audio");
     }
 
     if (LessonLanguage === "en") {
-      play_sound("../../audio/letters/en/" + $(this).data("card_number") + ".mp3", "media_audio");
+      var audio_file_number = "/math/en/" + $(this).data("card_number") + ".mp3";
+      play_sound("../../audio/" + audio_file_number, "media_audio");
     }
 
     if (LessonLanguage === "ch") {
-      play_sound("../../audio/letters/ch/number_" + $(this).data("card_number") + "_ch.mp3", "media_audio");
+      var audio_file_number = "/math/ch/" + $(this).data("card_number") + ".mp3";
+
+      play_sound("../../audio/" + audio_file_number, "media_audio");
     }
 
     if ($(this).data("is_correct") === "yes") {
@@ -527,9 +553,21 @@ $(document).ready(function () {
     var LoopTop = 10;
     if (LessonRange === 5 || LessonRange === 10) {
       LoopTop = 10;
+      duck_row = 5;
+      duck_width_question = 40;
+      duck_width_answer = 35;
     }
     if (LessonRange === 20) {
       LoopTop = 20;
+      duck_row = 5;
+      duck_width_question = 40;
+      duck_width_answer = 35;
+    }
+    if (LessonRange === 30) {
+      LoopTop = 30;
+      duck_row = 10;
+      duck_width_question = 26;
+      duck_width_answer = 22;
     }
 
 
