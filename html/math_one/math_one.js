@@ -31,6 +31,10 @@ var duck_width_question = 40;
 var duck_width_answer = 35;
 
 
+var PlayArrayList = [];
+var PlayArrayIndex = 0;
+var PlayArray = false;
+
 //-----------------------------------------------------------------------------------------------------------
 function play_sound(mp3, playerid, pause_play) {
   var AudioSrc = mp3;
@@ -183,6 +187,17 @@ var _listener = function (playerid) {
       $("#progress_bar_box").css({"width": ((LessonProgress / (LessonLength)) * 100) + "%"});
     }
   }
+
+  if (PlayArray) {
+    if (PlayArrayIndex < PlayArrayList.length - 1) {
+      PlayArrayIndex++;
+      play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
+    }
+    else {
+      PlayArray = false;
+    }
+  }
+
 };
 
 
@@ -283,59 +298,20 @@ function AskMathQuestion(QuestionNumber) {
 
 //  $("#MathQuestionDiv").html(MathLessonArray[QuestionNumber].a + " + " + MathLessonArray[QuestionNumber].b + " = <br>");
 
-  var audio_file = "";
   var audio_file_correct = "";
 
-  if (LessonLanguage === "en") {
-    if (MathLessonArray[QuestionNumber].operator === "plus") {
-      audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
 
-      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-    }
+  PlayArrayList[0] = "../../audio/math/" + LessonLanguage + "/" + MathLessonArray[QuestionNumber].a + ".mp3";
+  PlayArrayList[1] = "../../audio/math/" + LessonLanguage + "/" + MathLessonArray[QuestionNumber].operator + ".mp3";
+  PlayArrayList[2] = "../../audio/math/" + LessonLanguage + "/" + MathLessonArray[QuestionNumber].b + ".mp3";
+  PlayArrayList[3] = "../../audio/math/" + LessonLanguage + "/equals.mp3";
+  // PlayArrayList[4] = "../../audio/math/"+LessonLanguage+"/"+MathLessonArray[QuestionNumber].sum+".mp3";
 
-    if (MathLessonArray[QuestionNumber].operator === "minus") {
-      audio_file = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
+  audio_file_correct = "/math/" + LessonLanguage + "/" + MathLessonArray[QuestionNumber].sum + ".mp3";
 
-      audio_file_correct = "/math/en/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-
-    }
-  }
-
-  if (LessonLanguage === "tr") {
-    if (MathLessonArray[QuestionNumber].operator === "plus") {
-      audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-arti-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
-
-      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-    }
-
-    if (MathLessonArray[QuestionNumber].operator === "minus") {
-      audio_file = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].a + "-eksi-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
-
-      audio_file_correct = "/math/tr/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-    }
-  }
-
-  if (LessonLanguage === "ch") {
-    if (MathLessonArray[QuestionNumber].operator === "plus") {
-      audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-plus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
-
-      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-    }
-
-    if (MathLessonArray[QuestionNumber].operator === "minus") {
-      audio_file = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq.mp3";
-      // audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].a + "-minus-" + MathLessonArray[QuestionNumber].b + "-eq-" + MathLessonArray[QuestionNumber].sum + ".mp3";
-
-      audio_file_correct = "/math/ch/" + MathLessonArray[QuestionNumber].sum + ".mp3";
-    }
-  }
-
-  play_sound("../../audio/" + audio_file, "media_audio");
+  PlayArrayIndex = 0;
+  PlayArray = true;
+  play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
 
 
   $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a, duck_width_question, duck_row) + "</div>");
@@ -369,10 +345,6 @@ function AskMathQuestion(QuestionNumber) {
 
   $("#MathAnswersDiv").css({"top": ($("#MathQuestionDiv").height() + 70) + "px"})
 
-  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, duck_width_answer, duck_row) + "</div>";
-
-  $("#MathAnswersDiv").append(CorrectAnswerBlock);
-
   var AllAnswers = [];
 
   AllAnswers.push(parseInt(MathLessonArray[QuestionNumber].sum, 10));
@@ -389,6 +361,10 @@ function AskMathQuestion(QuestionNumber) {
 
     $("#MathAnswersDiv").append(WrongAnswerBlock);
   }
+
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, duck_width_answer, duck_row) + "</div>";
+
+  $("#MathAnswersDiv").append(CorrectAnswerBlock);
 
   var heights = $(".answer_divs").map(function () {
     return $(this).outerHeight();
@@ -413,21 +389,10 @@ function AskMathQuestion(QuestionNumber) {
     $(".answer_divs").removeClass("answer_divs_focus");
     $(this).addClass("answer_divs_focus");
 
-    if (LessonLanguage === "tr") {
-      var audio_file_number = "/math/tr/" + $(this).data("card_number") + ".mp3";
-      play_sound("../../audio/" + audio_file_number, "media_audio");
-    }
+    PlayArray = false;
 
-    if (LessonLanguage === "en") {
-      var audio_file_number = "/math/en/" + $(this).data("card_number") + ".mp3";
-      play_sound("../../audio/" + audio_file_number, "media_audio");
-    }
-
-    if (LessonLanguage === "ch") {
-      var audio_file_number = "/math/ch/" + $(this).data("card_number") + ".mp3";
-
-      play_sound("../../audio/" + audio_file_number, "media_audio");
-    }
+    var audio_file_number = "/math/" + LessonLanguage + "/" + $(this).data("card_number") + ".mp3";
+    play_sound("../../audio/" + audio_file_number, "media_audio");
 
     if ($(this).data("is_correct") === "yes") {
 
@@ -563,8 +528,8 @@ $(document).ready(function () {
       duck_width_question = 40;
       duck_width_answer = 35;
     }
-    if (LessonRange === 30) {
-      LoopTop = 30;
+    if (LessonRange >= 30) {
+      LoopTop = LessonRange;
       duck_row = 10;
       duck_width_question = 26;
       duck_width_answer = 22;
@@ -637,8 +602,17 @@ $(document).ready(function () {
     console.log(MathLessonArray.length);
 
 
-    $("#ObjectsContainer").height($("#top-half").height() + "px");
+    // PlayArrayList[0] = "../../audio/math/tr/15.mp3";
+    // PlayArrayList[1] = "../../audio/math/tr/plus.mp3";
+    // PlayArrayList[2] = "../../audio/math/tr/16.mp3";
+    // PlayArrayList[3] = "../../audio/math/tr/equals.mp3";
+    // PlayArrayList[4] = "../../audio/math/tr/31.mp3";
+    // PlayArrayIndex = 0;
+    // PlayArray = true;
+    // play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
 
+
+    $("#ObjectsContainer").height($("#top-half").height() + "px");
     AskMathQuestion(LessonProgress);
 
     $(document).on("contextmenu", function (e) {
@@ -664,7 +638,6 @@ $(document).ready(function () {
 
 
     $("#ballons").hide();
-
 
   }
 );

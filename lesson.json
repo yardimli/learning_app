@@ -336,6 +336,16 @@
         "name": "1-30",
         "query": "range",
         "value": "30"
+      },
+      {
+        "name": "1-40",
+        "query": "range",
+        "value": "40"
+      },
+      {
+        "name": "1-50",
+        "query": "range",
+        "value": "50"
       }
     ],
     "options3": [
