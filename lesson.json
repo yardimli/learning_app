@@ -346,6 +346,11 @@
         "name": "1-50",
         "query": "range",
         "value": "50"
+      },
+      {
+        "name": "1-99",
+        "query": "range",
+        "value": "99"
       }
     ],
     "options3": [

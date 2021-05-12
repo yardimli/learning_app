@@ -30,6 +30,9 @@ var duck_row = 5;
 var duck_width_question = 40;
 var duck_width_answer = 35;
 
+var duck_height_question = 0;
+var duck_height_answer = 0;
+
 
 var PlayArrayList = [];
 var PlayArrayIndex = 0;
@@ -261,7 +264,7 @@ $.fn.randomize = function (selector) {
   return this;
 };
 
-function duck_string(duck_id, number_of_ducks, duck_width = 40, duck_row = 5) {
+function duck_string(duck_id, number_of_ducks, duck_width = 40,duck_height = 0, duck_row = 5) {
 
   var text_align = "center";
   if (number_of_ducks >= duck_row) {
@@ -273,9 +276,14 @@ function duck_string(duck_id, number_of_ducks, duck_width = 40, duck_row = 5) {
     duck_margin = 10;
   }
 
+  var duck_height_str = "";
+  if (duck_height>0) {
+    duck_height_str = " height:"+duck_height+"px; ";
+  }
+
   var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + duck_margin) * duck_row) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
   for (var i = 0; i < number_of_ducks; i++) {
-    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; margin-right:" + duck_margin + "px; margin-bottom: 10px; vertical-align: top; ' />";
+    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; "+duck_height_str+" margin-right:" + duck_margin + "px; margin-bottom: 10px; vertical-align: top; ' />";
   }
   ducks_string += "</div>";
   return ducks_string;
@@ -314,7 +322,7 @@ function AskMathQuestion(QuestionNumber) {
   play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
 
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a, duck_width_question, duck_row) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a, duck_width_question, duck_height_question, duck_row) + "</div>");
 
   if (MathLessonArray[QuestionNumber].operator === "plus") {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>+</div>");
@@ -324,11 +332,11 @@ function AskMathQuestion(QuestionNumber) {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>-</div>");
   }
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b, duck_width_question, duck_row) + "</div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b, duck_width_question, duck_height_question, duck_row) + "</div>");
 
   $("#MathQuestionDiv").append("<div class='question_div'><div  class='text_style'>=</div>");
 
-  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum", MathLessonArray[QuestionNumber].sum, duck_width_question, duck_row) + "</div></div>");
+  $("#MathQuestionDiv").append("<div class='question_div'><div id='correct_answer_div'><div  class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("question_sum", MathLessonArray[QuestionNumber].sum, duck_width_question, duck_height_question, duck_row) + "</div></div>");
 
 
   var heights = $(".question_div").map(function () {
@@ -357,12 +365,12 @@ function AskMathQuestion(QuestionNumber) {
     }
     AllAnswers.push(RandomWrongAnswer);
 
-    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("", RandomWrongAnswer, duck_width_answer, duck_row) + "</div>";
+    var WrongAnswerBlock = "<div data-is_correct='no' data-card_number='" + RandomWrongAnswer + "' class='wrong_answer answer_divs'><div class='text_style'>" + RandomWrongAnswer + "</div>" + duck_string("", RandomWrongAnswer, duck_width_answer, duck_height_answer, duck_row) + "</div>";
 
     $("#MathAnswersDiv").append(WrongAnswerBlock);
   }
 
-  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, duck_width_answer, duck_row) + "</div>";
+  var CorrectAnswerBlock = "<div data-is_correct='yes' data-card_number='" + MathLessonArray[QuestionNumber].sum + "' class='correct_answer answer_divs'><div class='text_style'>" + MathLessonArray[QuestionNumber].sum + "</div>" + duck_string("", MathLessonArray[QuestionNumber].sum, duck_width_answer, duck_height_answer, duck_row) + "</div>";
 
   $("#MathAnswersDiv").append(CorrectAnswerBlock);
 
@@ -515,28 +523,34 @@ $(document).ready(function () {
     CurrentLessonType = 1;
     LessonRedoWrongAnswers = LessonParameters["redo_wrong_answers"];
 
-    var LoopTop = 10;
+
+    var LoopTop = LessonRange;
     if (LessonRange === 5 || LessonRange === 10) {
-      LoopTop = 10;
       duck_row = 5;
       duck_width_question = 40;
       duck_width_answer = 35;
     }
     if (LessonRange === 20) {
-      LoopTop = 20;
       duck_row = 5;
       duck_width_question = 40;
       duck_width_answer = 35;
     }
-    if (LessonRange >= 30) {
-      LoopTop = LessonRange;
+    if (LessonRange >= 30 && LessonRange <=50  ) {
       duck_row = 10;
       duck_width_question = 26;
       duck_width_answer = 22;
     }
 
+  if (LessonRange > 50 ) {
+    duck_row = 10;
+    duck_width_question = 26;
+    duck_width_answer = 22;
+    duck_height_question = 15;
+    duck_height_answer = 15;
+  }
 
-    if (LessonType === "addition" || LessonType === "both") {
+
+  if (LessonType === "addition" || LessonType === "both") {
       MathProblemsArray = [];
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
