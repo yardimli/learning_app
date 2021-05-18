@@ -332,6 +332,14 @@ function AskMathQuestion(QuestionNumber) {
     $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>-</div>");
   }
 
+  if (MathLessonArray[QuestionNumber].operator === "times") {
+    $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>*</div>");
+  }
+
+  if (MathLessonArray[QuestionNumber].operator === "divided-by") {
+    $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>&#247;</div>");
+  }
+
   $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].b + "</div>" + duck_string("question_b", MathLessonArray[QuestionNumber].b, duck_width_question, duck_height_question, duck_row) + "</div>");
 
   $("#MathQuestionDiv").append("<div class='question_div'><div  class='text_style'>=</div>");
@@ -549,6 +557,56 @@ $(document).ready(function () {
     duck_height_answer = 15;
   }
 
+  if (LessonType === "multiplication" || LessonType === "both2") {
+    MathProblemsArray = [];
+    for (var i = 1; i <= LoopTop; i++) {
+      for (var j = 1; j <= LoopTop; j++) {
+        if (i * j <= LessonRange) {
+          MathProblemsArray.push({"a": i, "b": j, "operator": "times", "sum": (i * j)});
+        }
+      }
+    }
+
+    if (LessonSectionLength === 1000) {
+      // ask all math problems in the order created so will fill MathLessonArray later
+    }
+    else {
+      while (MathLessonArray.length < LessonSectionLength) {
+        j = getRandomInt(0, MathProblemsArray.length - 1);
+        if (getRandomInt(0, 100) > 90) {
+          MathLessonArray.push(MathProblemsArray[j]);
+        }
+      }
+    }
+  }
+
+  if (LessonType === "division" || LessonType === "both2") {
+    MathProblemsArray = [];
+    for (var i = 1; i <= LoopTop; i++) {
+      for (var j = 1; j <= LoopTop; j++) {
+        if ((i / j <= LessonRange) && (i % j ===0)) {
+          MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
+        }
+      }
+    }
+
+    if (LessonSectionLength === 1000) {
+      // ask all math problems in the order created so will fill MathLessonArray later
+    }
+    else {
+      var temp_max_length = LessonSectionLength;
+      if (LessonType === "both2") {
+        temp_max_length = LessonSectionLength * 2;
+      }
+
+      while (MathLessonArray.length < temp_max_length) {
+        j = getRandomInt(0, MathProblemsArray.length - 1);
+        if (getRandomInt(0, 100) > 90) {
+          MathLessonArray.push(MathProblemsArray[j]);
+        }
+      }
+    }
+  }
 
   if (LessonType === "addition" || LessonType === "both") {
       MathProblemsArray = [];
@@ -566,7 +624,7 @@ $(document).ready(function () {
       else {
         while (MathLessonArray.length < LessonSectionLength) {
           j = getRandomInt(0, MathProblemsArray.length - 1);
-          if (getRandomInt(0, 100) > 80) {
+          if (getRandomInt(0, 100) > 90) {
             MathLessonArray.push(MathProblemsArray[j]);
           }
         }
@@ -600,7 +658,7 @@ $(document).ready(function () {
 
         while (MathLessonArray.length < temp_max_length) {
           j = getRandomInt(0, MathProblemsArray.length - 1);
-          if (getRandomInt(0, 100) > 80) {
+          if (getRandomInt(0, 100) > 90) {
             MathLessonArray.push(MathProblemsArray[j]);
           }
         }

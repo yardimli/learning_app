@@ -311,9 +311,24 @@
         "value": "subtraction"
       },
       {
-        "name": "Both",
+        "name": "Multiplication",
+        "query": "type",
+        "value": "multiplication"
+      },
+      {
+        "name": "Division",
+        "query": "type",
+        "value": "division"
+      },
+      {
+        "name": "Addition & Subtraction",
         "query": "type",
         "value": "both"
+      },
+      {
+        "name": "Multiplication & Division",
+        "query": "type",
+        "value": "both2"
       }
     ],
     "options2": [
