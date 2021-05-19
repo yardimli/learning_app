@@ -559,8 +559,8 @@ $(document).ready(function () {
 
   if (LessonType === "multiplication" || LessonType === "both2") {
     MathProblemsArray = [];
-    for (var i = 1; i <= LoopTop; i++) {
-      for (var j = 1; j <= LoopTop; j++) {
+    for (var i = 2; i <= LoopTop; i++) {
+      for (var j = 2; j <= LoopTop; j++) {
         if (i * j <= LessonRange) {
           MathProblemsArray.push({"a": i, "b": j, "operator": "times", "sum": (i * j)});
         }
@@ -582,8 +582,8 @@ $(document).ready(function () {
 
   if (LessonType === "division" || LessonType === "both2") {
     MathProblemsArray = [];
-    for (var i = 1; i <= LoopTop; i++) {
-      for (var j = 1; j <= LoopTop; j++) {
+    for (var i = 2; i <= LoopTop; i++) {
+      for (var j = 2; j <= LoopTop; j++) {
         if ((i / j <= LessonRange) && (i % j ===0)) {
           MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
         }
