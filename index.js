@@ -260,6 +260,9 @@ $(document).ready(function () {
                     <div class="select options3_lesson_${data[i].id}">
                   <select  class="selectNative js-selectNative" aria-labelledby="jobLabel" id="options3_lesson_${data[i].id}">
                   </select></div>
+                    <div class="select options4_lesson_${data[i].id}">
+                  <select  class="selectNative js-selectNative" aria-labelledby="jobLabel" id="options4_lesson_${data[i].id}">
+                  </select></div>
                   <div id="buttons_lesson_${data[i].id}"></div>
 
                   <div id="checkbox_${data[i].id}"></div>
@@ -324,6 +327,19 @@ $(document).ready(function () {
         else {
           $("#options3_lesson_" + data[i].id).hide();
           $(".options3_lesson_" + data[i].id).hide();
+        }
+
+        if (typeof data[i].options4 !== "undefined") {
+          var Options4 = "";
+          if (typeof data[i].options4 !== "undefined") {
+            for (var j = 0; j < data[i].options4.length; j++) {
+              $("#options4_lesson_" + data[i].id).append("<option data-query='" + data[i].options4[j].query + "' data-value='" + data[i].options4[j].value + "' value='" + data[i].options4[j].query + "#" + data[i].options4[j].value + "'>" + data[i].options4[j].name + "</option>");
+            }
+          }
+        }
+        else {
+          $("#options4_lesson_" + data[i].id).hide();
+          $(".options4_lesson_" + data[i].id).hide();
         }
 
         if (typeof data[i].buttons !== "undefined") {
@@ -398,6 +414,13 @@ $(document).ready(function () {
 
           var DropDownQuery = $("#options3_" + $(this).data("lesson_id")).find(":selected").data("query");
           var DropDownValue = $("#options3_" + $(this).data("lesson_id")).find(":selected").data("value");
+
+          if (typeof DropDownQuery !== "undefined") {
+            LessonParameters[DropDownQuery] = DropDownValue;
+          }
+
+          var DropDownQuery = $("#options4_" + $(this).data("lesson_id")).find(":selected").data("query");
+          var DropDownValue = $("#options4_" + $(this).data("lesson_id")).find(":selected").data("value");
 
           if (typeof DropDownQuery !== "undefined") {
             LessonParameters[DropDownQuery] = DropDownValue;

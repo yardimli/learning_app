@@ -262,7 +262,7 @@
   },
   {
     "id": "5015",
-    "name": "Addition and Subtraction",
+    "name": "Addition 101",
     "description": "Learn to Add and Subtract",
     "picture": "./lesson_pictures/math.png",
     "screen_path": "html/math_one/index.html",
@@ -388,6 +388,18 @@
         "name": "All Questions",
         "query": "length",
         "value": "1000"
+      }
+    ],
+    "options4": [
+      {
+        "name": "Show Icons",
+        "query": "show_icons",
+        "value": "yes"
+      },
+      {
+        "name": "No Icons",
+        "query": "show_icons",
+        "value": "no"
       }
     ]
   },

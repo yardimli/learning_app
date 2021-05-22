@@ -11,6 +11,7 @@ var LessonLength;
 var LessonSectionLength;
 var LessonRedoWrongAnswers = "yes";
 var AddQuestionAgainToEndOfList = false;
+var LessonShowIcons = "yes";
 
 var LessonType;
 var LessonRange;
@@ -264,7 +265,8 @@ $.fn.randomize = function (selector) {
   return this;
 };
 
-function duck_string(duck_id, number_of_ducks, duck_width = 40,duck_height = 0, duck_row = 5) {
+function duck_string(duck_id, number_of_ducks, duck_width = 40, duck_height = 0, duck_row = 5) {
+
 
   var text_align = "center";
   if (number_of_ducks >= duck_row) {
@@ -277,15 +279,20 @@ function duck_string(duck_id, number_of_ducks, duck_width = 40,duck_height = 0, 
   }
 
   var duck_height_str = "";
-  if (duck_height>0) {
-    duck_height_str = " height:"+duck_height+"px; ";
+  if (duck_height > 0) {
+    duck_height_str = " height:" + duck_height + "px; ";
   }
 
-  var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + duck_margin) * duck_row) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
-  for (var i = 0; i < number_of_ducks; i++) {
-    ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; "+duck_height_str+" margin-right:" + duck_margin + "px; margin-bottom: 10px; vertical-align: top; ' />";
+  if (LessonShowIcons !== "yes") {
+    var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + duck_margin) * duck_row) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + "; height: 75px;'></div>";
+  } else {
+
+    var ducks_string = "<div id='" + duck_id + "' style='width:" + ((duck_width + duck_margin) * duck_row) + "px; display: inline-block; vertical-align: top; text-align: " + text_align + ";'>";
+    for (var i = 0; i < number_of_ducks; i++) {
+      ducks_string += "<img src='" + duck_template.src + "' style='width:" + duck_width + "px; " + duck_height_str + " margin-right:" + duck_margin + "px; margin-bottom: 10px; vertical-align: top; ' />";
+    }
+    ducks_string += "</div>";
   }
-  ducks_string += "</div>";
   return ducks_string;
 }
 
@@ -531,6 +538,8 @@ $(document).ready(function () {
     CurrentLessonType = 1;
     LessonRedoWrongAnswers = LessonParameters["redo_wrong_answers"];
 
+    LessonShowIcons = LessonParameters["show_icons"];
+
 
     var LoopTop = LessonRange;
     if (LessonRange === 5 || LessonRange === 10) {
@@ -543,72 +552,72 @@ $(document).ready(function () {
       duck_width_question = 40;
       duck_width_answer = 35;
     }
-    if (LessonRange >= 30 && LessonRange <=50  ) {
+    if (LessonRange >= 30 && LessonRange <= 50) {
       duck_row = 10;
       duck_width_question = 26;
       duck_width_answer = 22;
     }
 
-  if (LessonRange > 50 ) {
-    duck_row = 10;
-    duck_width_question = 26;
-    duck_width_answer = 22;
-    duck_height_question = 15;
-    duck_height_answer = 15;
-  }
+    if (LessonRange > 50) {
+      duck_row = 10;
+      duck_width_question = 26;
+      duck_width_answer = 22;
+      duck_height_question = 15;
+      duck_height_answer = 15;
+    }
 
-  if (LessonType === "multiplication" || LessonType === "both2") {
-    MathProblemsArray = [];
-    for (var i = 2; i <= LoopTop; i++) {
-      for (var j = 2; j <= LoopTop; j++) {
-        if (i * j <= LessonRange) {
-          MathProblemsArray.push({"a": i, "b": j, "operator": "times", "sum": (i * j)});
+    if (LessonType === "multiplication" || LessonType === "both2") {
+      MathProblemsArray = [];
+      for (var i = 2; i <= LoopTop; i++) {
+        for (var j = 2; j <= LoopTop; j++) {
+          if (i * j <= LessonRange) {
+            MathProblemsArray.push({"a": i, "b": j, "operator": "times", "sum": (i * j)});
+          }
+        }
+      }
+
+      if (LessonSectionLength === 1000) {
+        // ask all math problems in the order created so will fill MathLessonArray later
+      }
+      else {
+        while (MathLessonArray.length < LessonSectionLength) {
+          j = getRandomInt(0, MathProblemsArray.length - 1);
+          if (getRandomInt(0, 100) > 90) {
+            MathLessonArray.push(MathProblemsArray[j]);
+          }
         }
       }
     }
 
-    if (LessonSectionLength === 1000) {
-      // ask all math problems in the order created so will fill MathLessonArray later
-    }
-    else {
-      while (MathLessonArray.length < LessonSectionLength) {
-        j = getRandomInt(0, MathProblemsArray.length - 1);
-        if (getRandomInt(0, 100) > 90) {
-          MathLessonArray.push(MathProblemsArray[j]);
+    if (LessonType === "division" || LessonType === "both2") {
+      MathProblemsArray = [];
+      for (var i = 2; i <= LoopTop; i++) {
+        for (var j = 2; j <= LoopTop; j++) {
+          if ((i / j <= LessonRange) && (i % j === 0)) {
+            MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
+          }
+        }
+      }
+
+      if (LessonSectionLength === 1000) {
+        // ask all math problems in the order created so will fill MathLessonArray later
+      }
+      else {
+        var temp_max_length = LessonSectionLength;
+        if (LessonType === "both2") {
+          temp_max_length = LessonSectionLength * 2;
+        }
+
+        while (MathLessonArray.length < temp_max_length) {
+          j = getRandomInt(0, MathProblemsArray.length - 1);
+          if (getRandomInt(0, 100) > 90) {
+            MathLessonArray.push(MathProblemsArray[j]);
+          }
         }
       }
     }
-  }
 
-  if (LessonType === "division" || LessonType === "both2") {
-    MathProblemsArray = [];
-    for (var i = 2; i <= LoopTop; i++) {
-      for (var j = 2; j <= LoopTop; j++) {
-        if ((i / j <= LessonRange) && (i % j ===0)) {
-          MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
-        }
-      }
-    }
-
-    if (LessonSectionLength === 1000) {
-      // ask all math problems in the order created so will fill MathLessonArray later
-    }
-    else {
-      var temp_max_length = LessonSectionLength;
-      if (LessonType === "both2") {
-        temp_max_length = LessonSectionLength * 2;
-      }
-
-      while (MathLessonArray.length < temp_max_length) {
-        j = getRandomInt(0, MathProblemsArray.length - 1);
-        if (getRandomInt(0, 100) > 90) {
-          MathLessonArray.push(MathProblemsArray[j]);
-        }
-      }
-    }
-  }
-
-  if (LessonType === "addition" || LessonType === "both") {
+    if (LessonType === "addition" || LessonType === "both") {
       MathProblemsArray = [];
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
