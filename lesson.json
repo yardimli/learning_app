@@ -262,8 +262,8 @@
   },
   {
     "id": "5015",
-    "name": "Addition 101",
-    "description": "Learn to Add and Subtract",
+    "name": "Math 101",
+    "description": "Learn to Add, Subtract, Multiply and Divide",
     "picture": "./lesson_pictures/math.png",
     "screen_path": "html/math_one/index.html",
     "buttons": [
