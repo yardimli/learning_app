@@ -593,7 +593,7 @@ $(document).ready(function () {
       MathProblemsArray = [];
       for (var i = 2; i <= LoopTop; i++) {
         for (var j = 2; j <= LoopTop; j++) {
-          if ((i / j <= LessonRange) && (i % j === 0)) {
+          if ((i / j <= LessonRange) && (i % j === 0) && (i / j>1) ) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
           }
         }
