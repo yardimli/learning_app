@@ -366,12 +366,12 @@
         "name": "1-99",
         "query": "range",
         "value": "99"
-      },      {
+      },
+      {
         "name": "49-199",
         "query": "range",
         "value": "199"
       }
-
     ],
     "options3": [
       {

@@ -664,7 +664,7 @@ $(document).ready(function () {
 
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
-          if (i - j <= LessonRange && (i - j >= 0 &&  && (i-j)>LessonBottomRange)) {
+          if (i - j <= LessonRange && (i - j >= 0) && (i-j)>LessonBottomRange) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "minus", "sum": (i - j)});
           }
         }
