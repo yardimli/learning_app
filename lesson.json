@@ -333,44 +333,59 @@
     ],
     "options2": [
       {
-        "name": "1-5",
+        "name": "1-5, sum 2-10",
+        "query": "range",
+        "value": "1"
+      },
+      {
+        "name": "1-9, sum 2-10",
+        "query": "range",
+        "value": "2"
+      },
+      {
+        "name": "1-19, sum 2-20",
+        "query": "range",
+        "value": "3"
+      },
+      {
+        "name": "1-29, sum 2-30",
+        "query": "range",
+        "value": "4"
+      },
+      {
+        "name": "1-39, sum 2-40",
         "query": "range",
         "value": "5"
       },
       {
-        "name": "1-10",
+        "name": "1-49, sum 2-50",
+        "query": "range",
+        "value": "6"
+      },
+      {
+        "name": "1-99, sum 2-100",
+        "query": "range",
+        "value": "7"
+      },
+      {
+        "name": "2-29, sum 2-1000",
+        "query": "range",
+        "value": "8"
+      },
+      {
+        "name": "2-99, sum 2-200",
+        "query": "range",
+        "value": "9"
+      },
+      {
+        "name": "2-199, sum 2-200",
         "query": "range",
         "value": "10"
       },
       {
-        "name": "1-20",
+        "name": "2-199, sum 50-400",
         "query": "range",
-        "value": "20"
-      },
-      {
-        "name": "1-30",
-        "query": "range",
-        "value": "30"
-      },
-      {
-        "name": "1-40",
-        "query": "range",
-        "value": "40"
-      },
-      {
-        "name": "1-50",
-        "query": "range",
-        "value": "50"
-      },
-      {
-        "name": "1-99",
-        "query": "range",
-        "value": "99"
-      },
-      {
-        "name": "49-199",
-        "query": "range",
-        "value": "199"
+        "value": "11"
       }
     ],
     "options3": [
@@ -388,11 +403,6 @@
         "name": "30 Questions Each",
         "query": "length",
         "value": "30"
-      },
-      {
-        "name": "All Questions",
-        "query": "length",
-        "value": "1000"
       }
     ],
     "options4": [
