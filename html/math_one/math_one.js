@@ -15,6 +15,7 @@ var LessonShowIcons = "yes";
 
 var LessonType;
 var LessonRange;
+var LessonBottomRange = 0;
 var CorrectAnswerBoolean = false;
 var CurrentLessonType = 1;
 var CorrectAnswerValue = "";
@@ -543,22 +544,26 @@ $(document).ready(function () {
 
     var LoopTop = LessonRange;
     if (LessonRange === 5 || LessonRange === 10) {
+      LessonBottomRange = 0;
       duck_row = 5;
       duck_width_question = 40;
       duck_width_answer = 35;
     }
     if (LessonRange === 20) {
+      LessonBottomRange = 0;
       duck_row = 5;
       duck_width_question = 40;
       duck_width_answer = 35;
     }
     if (LessonRange >= 30 && LessonRange <= 50) {
+      LessonBottomRange = 0;
       duck_row = 10;
       duck_width_question = 26;
       duck_width_answer = 22;
     }
 
-    if (LessonRange > 50) {
+    if (LessonRange > 50 && LessonRange<=100) {
+      LessonBottomRange = 0;
       duck_row = 10;
       duck_width_question = 26;
       duck_width_answer = 22;
@@ -566,11 +571,20 @@ $(document).ready(function () {
       duck_height_answer = 15;
     }
 
-    if (LessonType === "multiplication" || LessonType === "both2") {
+  if (LessonRange >= 199) {
+    LessonBottomRange = 49;
+    duck_row = 10;
+    duck_width_question = 26;
+    duck_width_answer = 22;
+    duck_height_question = 15;
+    duck_height_answer = 15;
+  }
+
+  if (LessonType === "multiplication" || LessonType === "both2") {
       MathProblemsArray = [];
       for (var i = 2; i <= LoopTop; i++) {
         for (var j = 2; j <= LoopTop; j++) {
-          if (i * j <= LessonRange) {
+          if (i * j <= LessonRange && i*j>LessonBottomRange) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "times", "sum": (i * j)});
           }
         }
@@ -593,7 +607,7 @@ $(document).ready(function () {
       MathProblemsArray = [];
       for (var i = 2; i <= LoopTop; i++) {
         for (var j = 2; j <= LoopTop; j++) {
-          if ((i / j <= LessonRange) && (i % j === 0) && (i / j>1) ) {
+          if ((i / j <= LessonRange) && (i % j === 0) && (i / j>1)  && i/j>LessonBottomRange ) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "divided-by", "sum": (i / j)});
           }
         }
@@ -621,7 +635,7 @@ $(document).ready(function () {
       MathProblemsArray = [];
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
-          if (i + j <= LessonRange) {
+          if (i + j <= LessonRange && i+j>LessonBottomRange) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "plus", "sum": (i + j)});
           }
         }
@@ -650,7 +664,7 @@ $(document).ready(function () {
 
       for (var i = 1; i <= LoopTop; i++) {
         for (var j = 1; j <= LoopTop; j++) {
-          if (i - j <= LessonRange && (i - j >= 0)) {
+          if (i - j <= LessonRange && (i - j >= 0 &&  && (i-j)>LessonBottomRange)) {
             MathProblemsArray.push({"a": i, "b": j, "operator": "minus", "sum": (i - j)});
           }
         }

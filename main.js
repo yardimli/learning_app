@@ -208,7 +208,7 @@ function createWindow() {
 
 
 		log_and_reply(event, "download words.json");
-		download("https://elosoft.tw/picture-dictionary-editor/dictionary/data.php", path.join(dataPath, "words2.json"), function () {
+		download(, path.join(dataPath, "words2.json"), function () {
 
 			if (fs.existsSync(path.join(dataPath, "words2.json"))) {
 
