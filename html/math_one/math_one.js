@@ -658,12 +658,12 @@ $(document).ready(function () {
       LessonShowIcons = "no";
     }
 
-    var num_a=0;
-    var num_b=0;
+    var num_a = 0;
+    var num_b = 0;
     if (LessonType === "multiplication" || LessonType === "both2") {
       while (MathLessonArray.length < LessonSectionLength) {
-        num_a = getRandomInt(LessonBottomRange, LessonTopRange+1);
-        num_b = getRandomInt(LessonBottomRange, LessonTopRange+1);
+        num_a = getRandomInt(LessonBottomRange, LessonTopRange + 1);
+        num_b = getRandomInt(LessonBottomRange, LessonTopRange + 1);
         if ((num_a * num_b <= LessonSumTopRange) && (num_a * num_b >= LessonSumBottomRange)) {
           MathLessonArray.push({"a": num_a, "b": num_b, "operator": "times", "sum": (num_a * num_b)});
         }
@@ -671,9 +671,12 @@ $(document).ready(function () {
     }
 
     if (LessonType === "division" || LessonType === "both2") {
+      if (LessonType === "both2") {
+        LessonSectionLength = LessonSectionLength * 2;
+      }
       while (MathLessonArray.length < LessonSectionLength) {
-        num_a = getRandomInt(LessonBottomRange, LessonTopRange+1);
-        num_b = getRandomInt(LessonBottomRange, LessonTopRange+1);
+        num_a = getRandomInt(LessonSumBottomRange, LessonSumTopRange + 1);
+        num_b = getRandomInt(LessonBottomRange, LessonTopRange + 1);
         if ((num_a / num_b <= LessonSumTopRange) && (num_a % num_b === 0) && (num_a / num_b >= LessonSumBottomRange)) {
           MathLessonArray.push({"a": num_a, "b": num_b, "operator": "divided-by", "sum": (num_a / num_b)});
         }
@@ -683,10 +686,10 @@ $(document).ready(function () {
 
     if (LessonType === "addition" || LessonType === "both") {
       var while_break = 0;
-      while (MathLessonArray.length < LessonSectionLength && while_break<100) {
+      while (MathLessonArray.length < LessonSectionLength && while_break < 100) {
         while_break++;
-        num_a = getRandomInt(LessonBottomRange, LessonTopRange+1);
-        num_b = getRandomInt(LessonBottomRange, LessonTopRange+1);
+        num_a = getRandomInt(LessonBottomRange, LessonTopRange + 1);
+        num_b = getRandomInt(LessonBottomRange, LessonTopRange + 1);
         if ((num_a + num_b <= LessonSumTopRange) && (num_a + num_b >= LessonSumBottomRange)) {
           MathLessonArray.push({"a": num_a, "b": num_b, "operator": "plus", "sum": (num_a + num_b)});
         }
@@ -694,9 +697,12 @@ $(document).ready(function () {
     }
 
     if (LessonType === "subtraction" || LessonType === "both") {
+      if (LessonType === "both") {
+        LessonSectionLength = LessonSectionLength * 2;
+      }
       while (MathLessonArray.length < LessonSectionLength) {
-        num_a = getRandomInt(LessonBottomRange, LessonTopRange+1);
-        num_b = getRandomInt(LessonBottomRange, LessonTopRange+1);
+        num_a = getRandomInt(LessonBottomRange, LessonTopRange + 1);
+        num_b = getRandomInt(LessonBottomRange, LessonTopRange + 1);
         if ((num_a - num_b <= LessonSumTopRange) && (num_a - num_b >= LessonSumBottomRange)) {
           MathLessonArray.push({"a": num_a, "b": num_b, "operator": "minus", "sum": (num_a - num_b)});
         }
