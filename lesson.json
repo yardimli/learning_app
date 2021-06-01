@@ -182,6 +182,13 @@
     "screen_path": "html/type-talk/index.html"
   },
   {
+    "id": "9500",
+    "name": "Story Time",
+    "description": "Read Stories & Answer Questions",
+    "picture": "./lesson_pictures/story-time.jpg",
+    "screen_path": "html/story-time/index.html"
+  },
+  {
     "id": "5005",
     "name": "Counting",
     "description": "Count Objects and Use Keyboard",

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Story Time</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="../css/balloons.css" rel="stylesheet">
+	<link href="../css/story-time.css" rel="stylesheet">
+
+	<style>
+    @font-face {
+      font-family: 'hanwangmingboldregular';
+      src: url('../font/wp010-08.ttf') format('truetype');
+    }
+	</style>
+
+	<!-- Insert this line above script imports  -->
+	<script>if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+  }</script>
+
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/report_ajax.js"></script>
+
+	<script src="story-time.js"></script>
+
+
+	<!-- Insert this line after script imports -->
+	<script>if (window.module) module = window.module;</script>
+
+</head>
+
+<body>
+<div id="top-half">
+
+	<div style="position:fixed; top:0px;  width:100%; overflow:hidden; white-space: nowrap; height:15px; z-index: 10; display: flex; background-color: white;"
+	     id="progress_box">
+		<div class="progress-bar progress-bar-striped progress-bar-animated" id="progress_bar_box" style="width:0%"></div>
+	</div>
+
+	<link href='https://fonts.googleapis.com/css?family=Wendy+One' rel='stylesheet' type='text/css'>
+	<div style="position:fixed; bottom:0px;  width:100%; overflow:hidden; white-space: nowrap; height:250px; z-index: 10; display: flex;" id="ballons">
+		<div class="balloons_container">
+			<div class="balloon">
+				<div><span>B</span></div>
+				<div><span>R</span></div>
+				<div><span>A</span></div>
+				<div><span>V</span></div>
+				<div><span>O</span></div>
+				<div><span>!</span></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="position: fixed; top:20px; left:0px; width:100vw; height: 100vh; overflow: auto; z-index: 999;" ID="story_grid"></div>
+
+	<div style="max-height: 250px; display: none; text-align: center; margin-top:18px;" ID="story_div">
+		<div class="row">
+			<div class="col-4">
+				<img src="" id="story_picture" style="max-height: 250px;">
+			</div>
+			<div class="col-6 text-left">
+				<h2 id="story_title"></h2>
+				<div id="story_text" style="font-size: 18px;"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="BeginLesson"
+	     style="position: fixed; right:10px; bottom:10px;  background-color: rgb(255,128,0); color:white; border: 1px solid white; font-size: 20px; padding: 10px; border-radius: 5px; cursor: pointer; z-index: 999;">
+		BEGIN LESSON
+	</div>
+
+</div>
+
+
+<audio preload="none" id="media_audio">
+	<source id="media_audio_source" src="" type="audio/mpeg">
+</audio>
+
+<audio preload="none" id="media_audio2">
+	<source id="media_audio2_source" src="" type="audio/mpeg">
+</audio>
+
+</body>
+
+</html>

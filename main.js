@@ -3,15 +3,14 @@ const {readFileSync, existsSync} = require('fs') // used to read files
 const path = require('path');
 const mkdirp = require('mkdirp');
 const fs = require('fs') // used to read files
+const request = require('request')
 
 const http = require("http");
 const https = require("https");
 const url = require("url");
 const async = require('async');
 const crypto = require('crypto');
-// const DownloadManager = require("electron-download-manager");
-
-// const {download} = require("electron-dl");
+const ProgressBar = require('progress');
 
 var dataPath;
 var wordsJSON;
@@ -20,16 +19,44 @@ var MainWin;
 var newGuest;
 var LesonParameters;
 
+var json_dl_array = [];
+json_dl_array["story"] = false;
+json_dl_array["opposites"] = false;
+json_dl_array["words"] = false;
+json_dl_array["categories"] = false;
+var download_check;
+var download_array = [];
+
 dataPath = app.getPath('userData');
 console.log("data path:");
 console.log(dataPath);
 
 
+//--------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------------------------
+var download = function (url, dest, cb) {
+  var file = fs.createWriteStream(dest);
+  var request = https.get(url, function (response) {
+    response.pipe(file);
+    file.on('finish', function () {
+      console.log(url + " downloaded to " + dest);
+      file.close(cb);  // close() is async, call cb after close completes.
+    });
+  }).on('error', function (err) { // Handle errors
+    fs.unlink(dest); // Delete the file async. (But we don't check the result)
+    if (cb) cb(err.message);
+  });
+};
+
+
+//--------------------------------------------------------------------------------------------------------------
 // function to read from a json file
 function readWords() {
   let data;
   if (existsSync(path.join(dataPath, 'words.json'))) {
-    data = readFileSync(path.join(dataPath, 'words.json'), 'utf8')
+    data = readFileSync(path.join(dataPath, 'words.json'), 'utf8');
   }
   else {
     data = "{}";
@@ -37,10 +64,12 @@ function readWords() {
   return data
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function readStory() {
   let data;
   if (existsSync(path.join(dataPath, 'story.json'))) {
-    data = readFileSync(path.join(dataPath, 'story.json'), 'utf8')
+    data = readFileSync(path.join(dataPath, 'story.json'), 'utf8');
+    data = data.replace(/\n/gi,"<br>");
   }
   else {
     data = "{}";
@@ -48,6 +77,7 @@ function readStory() {
   return data
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function readOpposites() {
   // const data = readFileSync(path.join(dataPath, 'opposites.json'), 'utf8')
   let data;
@@ -60,6 +90,7 @@ function readOpposites() {
   return data
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function readCategories() {
   let data;
   if (existsSync(path.join(dataPath, 'categories.json'))) {
@@ -71,6 +102,7 @@ function readCategories() {
   return data
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function fileHash(filename, algorithm = 'md5') {
   return new Promise((resolve, reject) => {
     // Algorithm depends on availability of OpenSSL on platform
@@ -93,99 +125,156 @@ function fileHash(filename, algorithm = 'md5') {
 }
 
 
-var download = function (url, dest, cb) {
-  var file = fs.createWriteStream(dest);
-  var request = https.get(url, function (response) {
-    response.pipe(file);
-    file.on('finish', function () {
-      console.log(url + " downloaded to " + dest);
-      file.close(cb);  // close() is async, call cb after close completes.
+//--------------------------------------------------------------------------------------------------------------
+class Downloader {
+  constructor() {
+    this.q = async.queue(this.singleFile, 1);
+
+    // assign a callback
+    this.q.drain(function () {
+      console.log('all items have been processed');
     });
-  }).on('error', function (err) { // Handle errors
-    fs.unlink(dest); // Delete the file async. (But we don't check the result)
-    if (cb) cb(err.message);
-  });
-};
 
-function download_media(event, media_file, media_hash, media_path, media_url, callback) {
+    // assign an error callback
+    this.q.error(function (err, task) {
+      console.error('task experienced an error', task);
+    });
+  }
 
-  if (media_file !== null && media_file !== "") {
+  downloadFiles(links) {
+    for (let link of links) {
+      this.q.push(link);
+    }
+  }
 
-    if (fs.existsSync(path.join(dataPath, media_path + path.sep + media_file))) {
-      var file_data = fs.readFileSync(path.join(dataPath, media_path + path.sep + media_file));
-      var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
-      if (file_hash !== media_hash) {
-        log_and_reply(event, media_file + " changed. Downloading...");
-        download(media_url + media_file, path.join(dataPath, media_path + path.sep + media_file), function (err) {
-          if (err) {
-            log_and_reply(event, err);
-          }
-          log_and_reply(event, media_file + " downloaded.");
-          callback();
-        });
+  singleFile(link, cb) {
+
+    var doDownload = true;
+    if (link.media_file !== null && link.media_file !== "") {
+      if (fs.existsSync(path.join(dataPath, link.media_path + path.sep + link.media_file))) {
+        var file_data = fs.readFileSync(path.join(dataPath, link.media_path + path.sep + link.media_file));
+        var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
+        if (file_hash === link.media_hash) {
+          doDownload = false;
+        }
+      }
+
+      if (doDownload) {
+        let file = request(link.media_url + link.media_file);
+        let bar;
+        file.on('response', (res) => {
+          const len = parseInt(res.headers['content-length'], 10);
+          console.log(link.media_url + link.media_file);
+          bar = new ProgressBar('  Downloading [:bar] :rate/bps :percent :etas', {
+            complete: '=',
+            incomplete: ' ',
+            width: 20,
+            total: len
+          });
+          file.on('data', (chunk) => {
+            bar.tick(chunk.length);
+          })
+          file.on('end', () => {
+            console.log('\n');
+            cb();
+          })
+        })
+        file.pipe(fs.createWriteStream(path.join(dataPath, link.media_path + path.sep + link.media_file)));
       }
       else {
-        callback();
+        cb();
       }
     }
-    else if (!fs.existsSync(path.join(dataPath, media_path + path.sep + media_file))) {
-      log_and_reply(event, media_file + " not found. Downloading...");
-      download(media_url + media_file, path.join(dataPath, media_path + path.sep + media_file), function (err) {
-        if (err) {
-          log_and_reply(event, err);
-        }
-        log_and_reply(event, media_file + " downloaded.");
-        callback();
-      });
-    }
     else {
-      callback();
+      cb();
     }
   }
-  else {
-    callback();
-  }
-
 }
 
-var download_array = [];
+const dl = new Downloader();
 
+
+//--------------------------------------------------------------------------------------------------------------
 function parse_story(event) {
+  console.log("start parse story " + download_array.length);
   fs.readFile(path.join(dataPath, 'story.json'), 'utf-8', (err, data) => {
     if (err) throw err;
     storyJSON = JSON.parse(data);
-
-
     async.eachLimit(storyJSON, 1, function (SingleStoryJSON, callback) {
-      if (SingleStoryJSON.picture !== null && SingleStoryJSON.picture !== "") {
 
+      if (SingleStoryJSON.picture !== null && SingleStoryJSON.picture !== "") {
         download_array.push({
+          "processed": false,
           "media_file": SingleStoryJSON.picture,
           "media_hash": SingleStoryJSON.picture_hash,
           "media_path": "pictures" + path.sep + "story",
           "media_url": "https://elosoft.tw/picture-dictionary-editor/pictures/story/"
         });
+      }
 
+      if (SingleStoryJSON.audio !== null && SingleStoryJSON.audio !== "") {
         download_array.push({
+          "processed": false,
           "media_file": SingleStoryJSON.audio,
           "media_hash": SingleStoryJSON.audio_hash,
           "media_path": "audio" + path.sep + "story",
           "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/story/"
         });
-        callback();
       }
+
+      for (var i = 0; i < SingleStoryJSON.questions.length; i++) {
+        var story_question = SingleStoryJSON.questions[i];
+//        console.log(story_question);
+
+        if (story_question.audio !== null && story_question.audio !== "") {
+          download_array.push({
+            "processed": false,
+            "media_file": story_question.audio,
+            "media_hash": story_question.audio_hash,
+            "media_path": "audio" + path.sep + "story-question",
+            "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/story-question/"
+          });
+        }
+
+        for (var j = 0; j < story_question.answers.length; j++) {
+          var question_answer = story_question.answers[j];
+//          console.log(question_answer);
+
+          if (question_answer.picture !== null && question_answer.picture !== "") {
+            download_array.push({
+              "processed": false,
+              "media_file": question_answer.picture,
+              "media_hash": question_answer.picture_hash,
+              "media_path": "pictures" + path.sep + "story-answer",
+              "media_url": "https://elosoft.tw/picture-dictionary-editor/pictures/story-answer/"
+            });
+          }
+
+          if (question_answer.audio !== null && question_answer.audio !== "") {
+            download_array.push({
+              "processed": false,
+              "media_file": question_answer.audio,
+              "media_hash": question_answer.audio_hash,
+              "media_path": "audio" + path.sep + "story-answer",
+              "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/story-answer/"
+            });
+          }
+        }
+      }
+
+      callback();
     }, function () {
-      console.log(download_array);
-      log_and_reply(event, "story picture download finished.");
+      log_and_reply(event, "story media download list finished.");
     });
-
-//
-//    download_media(event, SingleStoryJSON.audio, SingleStoryJSON.audio_hash, "audio" + path.sep + "story", "https://elosoft.tw/picture-dictionary-editor/audio/story/", callback);
-
+    console.log("end parse story " + download_array.length);
+    json_dl_array["story"] = true;
   });
 }
 
+
+//--------------------------------------------------------------------------------------------------------------
 function parse_words(event) {
+  console.log("start parse dictionary " + download_array.length);
   fs.readFile(path.join(dataPath, 'words.json'), 'utf-8', (err, data) => {
     if (err) throw err;
     wordsJSON = JSON.parse(data);
@@ -193,174 +282,62 @@ function parse_words(event) {
     async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
 
       if (SingleWordsJSON.picture !== null && SingleWordsJSON.picture !== "") {
-
-        if (fs.existsSync(path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture))) {
-          var file_data = fs.readFileSync(path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture));
-          var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
-          if (file_hash !== SingleWordsJSON.picture_hash) {
-            log_and_reply(event, SingleWordsJSON.picture + " changed. Downloading...");
-            download("https://elosoft.tw/picture-dictionary-editor/pictures/" + SingleWordsJSON.picture, path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture), function (err) {
-              if (err) {
-                log_and_reply(event, err);
-              }
-              log_and_reply(event, SingleWordsJSON.picture + " downloaded.");
-              callback();
-            });
-          }
-          else {
-            callback();
-          }
-        }
-        else if (!fs.existsSync(path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture))) {
-          log_and_reply(event, SingleWordsJSON.picture + " not found. Downloading...");
-          download("https://elosoft.tw/picture-dictionary-editor/pictures/" + SingleWordsJSON.picture, path.join(dataPath, "pictures" + path.sep + SingleWordsJSON.picture), function (err) {
-            if (err) {
-              log_and_reply(event, err);
-            }
-            log_and_reply(event, SingleWordsJSON.picture + " downloaded.");
-            callback();
-          });
-        }
-        else {
-          callback();
-        }
+        download_array.push({
+          "processed": false,
+          "media_file": SingleWordsJSON.picture,
+          "media_hash": SingleWordsJSON.picture_hash,
+          "media_path": "pictures",
+          "media_url": "https://elosoft.tw/picture-dictionary-editor/pictures/"
+        });
       }
-      else {
-        callback();
-      }
-    }, function () {
-      log_and_reply(event, "pictures download finished.");
-    });
 
-
-    async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
       if (SingleWordsJSON.audio_TR !== null && SingleWordsJSON.audio_TR !== "" && (1 === 1)) {
-
-        if (fs.existsSync(path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR))) {
-          var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR));
-          var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
-          if (file_hash !== SingleWordsJSON.audio_tr_hash) {
-            log_and_reply(event, SingleWordsJSON.audio_TR + " changed. Downloading...");
-            download("https://elosoft.tw/picture-dictionary-editor/audio/tr/" + SingleWordsJSON.audio_TR, path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR), function (err) {
-              if (err) {
-                log_and_reply(event, err);
-              }
-              log_and_reply(event, SingleWordsJSON.audio_TR + " downloaded.");
-              callback();
-            });
-          }
-          else {
-            callback();
-          }
-        }
-        else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR))) {
-          log_and_reply(event, SingleWordsJSON.audio_TR + " not found. Downloading...");
-          download("https://elosoft.tw/picture-dictionary-editor/audio/tr/" + SingleWordsJSON.audio_TR, path.join(dataPath, "audio" + path.sep + "tr" + path.sep + SingleWordsJSON.audio_TR), function (err) {
-            if (err) {
-              log_and_reply(event, err);
-            }
-            log_and_reply(event, SingleWordsJSON.audio_TR + " downloaded.");
-            callback();
-          });
-        }
-        else {
-          callback();
-        }
+        download_array.push({
+          "processed": false,
+          "media_file": SingleWordsJSON.audio_TR,
+          "media_hash": SingleWordsJSON.audio_tr_hash,
+          "media_path": "audio" + path.sep + "tr",
+          "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/tr/"
+        });
       }
-      else {
-        callback();
-      }
-    }, function () {
-      log_and_reply(event, "audio tr download finished.");
-    });
 
-    async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
       if (SingleWordsJSON.audio_EN !== null && SingleWordsJSON.audio_EN !== "" && (1 === 1)) {
-        if (fs.existsSync(path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN))) {
-          var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN));
-          var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
-          if (file_hash !== SingleWordsJSON.audio_en_hash) {
-            log_and_reply(event, SingleWordsJSON.audio_EN + " not found. Downloading...");
-            download("https://elosoft.tw/picture-dictionary-editor/audio/en/" + SingleWordsJSON.audio_EN, path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN), function (err) {
-              if (err) {
-                log_and_reply(event, err);
-              }
-              log_and_reply(event, SingleWordsJSON.audio_EN + " downloaded.");
-              callback();
-            });
-          }
-          else {
-            callback();
-          }
-        }
-        else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN))) {
-          log_and_reply(event, SingleWordsJSON.audio_EN + " not found. Downloading...");
-          download("https://elosoft.tw/picture-dictionary-editor/audio/en/" + SingleWordsJSON.audio_EN, path.join(dataPath, "audio" + path.sep + "en" + path.sep + SingleWordsJSON.audio_EN), function (err) {
-            if (err) {
-              log_and_reply(event, err);
-            }
-            log_and_reply(event, SingleWordsJSON.audio_EN + " downloaded.");
-            callback();
-          });
-        }
-        else {
-          callback();
-        }
+        download_array.push({
+          "processed": false,
+          "media_file": SingleWordsJSON.audio_EN,
+          "media_hash": SingleWordsJSON.audio_en_hash,
+          "media_path": "audio" + path.sep + "en",
+          "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/en/"
+        });
       }
-      else {
-        callback();
-      }
-    }, function () {
-      log_and_reply(event, "audio en download finished.");
-    });
 
-    async.eachLimit(wordsJSON, 1, function (SingleWordsJSON, callback) {
       if (SingleWordsJSON.audio_CH !== null && SingleWordsJSON.audio_CH !== "" && (1 === 1)) {
-        if (fs.existsSync(path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH))) {
-          var file_data = fs.readFileSync(path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH));
-          var file_hash = crypto.createHash('md5').update(file_data).digest('hex').toString();
-          if (file_hash !== SingleWordsJSON.audio_ch_hash) {
-            log_and_reply(event, SingleWordsJSON.audio_CH + " changed. Downloading...");
-            download("https://elosoft.tw/picture-dictionary-editor/audio/ch/" + SingleWordsJSON.audio_CH, path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH), function (err) {
-              if (err) {
-                log_and_reply(event, err);
-              }
-              log_and_reply(event, SingleWordsJSON.audio_CH + " downloaded.");
-              callback();
-            });
-          }
-          else {
-            callback();
-          }
-        }
-        else if (!fs.existsSync(path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH))) {
-          log_and_reply(event, SingleWordsJSON.audio_CH + " not found. Downloading...");
-          download("https://elosoft.tw/picture-dictionary-editor/audio/ch/" + SingleWordsJSON.audio_CH, path.join(dataPath, "audio" + path.sep + "ch" + path.sep + SingleWordsJSON.audio_CH), function (err) {
-            if (err) {
-              log_and_reply(event, err);
-            }
-            log_and_reply(event, SingleWordsJSON.audio_CH + " downloaded.");
-            callback();
-          });
-        }
-        else {
-          callback();
-        }
+        download_array.push({
+          "processed": false,
+          "media_file": SingleWordsJSON.audio_CH,
+          "media_hash": SingleWordsJSON.audio_ch_hash,
+          "media_path": "audio" + path.sep + "ch",
+          "media_url": "https://elosoft.tw/picture-dictionary-editor/audio/ch/"
+        });
       }
-      else {
-        callback();
-      }
+
+      callback();
     }, function () {
-      log_and_reply(event, "audio ch download finished.");
+      log_and_reply(event, "dictionary media download list finished.");
     });
+    console.log("end parse dictionary " + download_array.length);
+    json_dl_array["words"] = true;
   });
+
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function log_and_reply(event, msg) {
   console.log(msg)
   event.reply('refresh-data-updated', msg);
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function createChildWindow(url) {
 
   console.log("NEW : " + url);
@@ -379,6 +356,7 @@ function createChildWindow(url) {
 
 }
 
+//--------------------------------------------------------------------------------------------------------------
 function createWindow() {
   MainWin = new BrowserWindow({
     width: 1280,
@@ -398,30 +376,38 @@ function createWindow() {
     callback({path: path.normalize(app.getPath('userData') + "/" + url)})
   });
 
-  // protocol.registerBufferProtocol('poster',
-  // 	(request, callback) => {
-  // 		const url = request.url.substr(9, request.url.length - 10);
-  //
-  // 		const uri = request.url;
-  // 		if (uri) {
-  // 			// callback({ mimeType: 'text/plain', data: Buffer.from(uri) });
-  // 			callback({path: app.getPath('userData')  + url});
-  // 		}
-  // 		else {
-  // 			callback({ error: -324 }); // EMPTY_RESPONSE
-  // 		}
-  // 	});
-
-  // protocol.registerStandardSchemes(['poster'])
-
   // Main process
 
+
+  //--------------------------------------------------------------------------------------------------------------
+  //re download all data
   ipcMain.on('refresh-data-start', (event, arg) => {
     console.log(arg) // prints "ping"
+    download_array = [];
 
-//--------------------------------------------------------------------------------------------------------------
-// download the data
+    json_dl_array["story"] = false;
+    json_dl_array["opposites"] = false;
+    json_dl_array["words"] = false;
+    json_dl_array["categories"] = false;
+
+    download_check = setInterval(function () {
+      if (json_dl_array["story"] && json_dl_array["opposites"] && json_dl_array["words"] && json_dl_array["categories"]) {
+        console.log("ALL JSONS FINISHED, START MEDIA CHECK AND DOWNLOAD FOR " + download_array.length + " ITEMS.");
+        clearInterval(download_check);
+
+        dl.downloadFiles(download_array);
+
+      }
+    }, 250);
+
     console.log("-----------------------------");
+    console.log("-----------------------------");
+    log_and_reply(event, 'data refresh initiated.');
+    console.log("-----------------------------");
+    console.log("-----------------------------");
+
+    //--------------------------------------------------------------------------------------------------------------
+    // download the data
     log_and_reply(event, path.join(dataPath, "audio"));
 
     mkdirp(path.join(dataPath, "audio")).then(made =>
@@ -498,6 +484,7 @@ function createWindow() {
     log_and_reply(event, "download opposites.json");
     download("https://elosoft.tw/picture-dictionary-editor/opposites.json", path.join(dataPath, "opposites.json"), function () {
       log_and_reply(event, "finished downloading opposites.json");
+      json_dl_array["opposites"] = true;
     });
 
 
@@ -549,6 +536,7 @@ function createWindow() {
             if (err) throw err;
             categoriesJSON = JSON.parse(data);
             log_and_reply(event, "categories download finished.");
+            json_dl_array["categories"] = true;
 //        console.log(categoriesJSON);
           });
         });
@@ -558,10 +546,6 @@ function createWindow() {
         // The check failed
       }
     });
-
-
-    //--------------------------------------------------------------------------------------------------
-    log_and_reply(event, 'data refresh initiated.');
   });
 
 }
@@ -574,6 +558,7 @@ ipcMain.on('get-lesson-parameters', (event, arg) => {
   event.returnValue = LesonParameters;
 });
 
+
 ipcMain.on('set-lesson-parameters', (event, arg) => {
   LesonParameters = arg;
 });
@@ -581,33 +566,41 @@ ipcMain.on('set-lesson-parameters', (event, arg) => {
 
 ipcMain.on('load-lesson', (event, arg) => {
   createChildWindow(arg);
-})
+});
 
 
 ipcMain.on('get-all-words', (event, arg) => {
   console.log(arg)
   event.returnValue = readWords()
-})
+});
+
+
+ipcMain.on('get-all-story', (event, arg) => {
+  console.log(arg)
+  event.returnValue = readStory()
+});
 
 ipcMain.on('get-all-opposites', (event, arg) => {
   console.log(arg)
   event.returnValue = readOpposites()
-})
+});
+
 
 ipcMain.on('get-all-categories', (event, arg) => {
   console.log(arg)
   event.returnValue = readCategories()
-})
+});
 
 
 app.on('window-all-closed', () => {
   // if (process.platform !== 'darwin') {
   app.quit()
   // }
-})
+});
+
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
-})
+});
