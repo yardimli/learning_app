@@ -28,13 +28,13 @@ var AddWordToEndOfList = false;
 
 var KeyboardPath;
 
-var media_audio_playing = false;
-var media_audio2_playing = false;
-
 var SentenceFiles = [];
 var SentenceIndex = 0;
 var PlaySentence = false;
 
+
+
+//-----------------------------------------------------------------------------------------------------------
 var _listener = function (playerid) {
 
   if (playerid.target.id === "media_audio") {
@@ -59,144 +59,7 @@ var _listener = function (playerid) {
 }
 
 
-function play_sound(mp3, playerid, pause_play) {
-  var AudioSrc = mp3;
-  let promise;
-
-  if (pause_play) {
-    console.log("______________ STOP AUDIO " + playerid);
-    if (playerid === "media_audio") {
-      media_audio_playing = false;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = false;
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-    }
-  }
-  else {
-    console.log("try to play: " + AudioSrc);
-    $(".sentence_words").removeClass("word_highlight");
-
-    if (PlaySentence) {
-      $(".sentence_words").eq(SentenceIndex-1).addClass("word_highlight");
-    }
-
-    $("#" + playerid + "_source").attr("src", AudioSrc);
-
-    if (playerid === "media_audio") {
-      media_audio_playing = true;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = true;
-    }
-
-
-    try {
-      $("#" + playerid)[0].load();//suspends and restores all audio element
-    } catch (e) {
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-      console.log("Error playing audio (1) " + AudioSrc);
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-
-
-    //play
-    try {
-      promise = document.querySelector("#" + playerid).play();
-
-      document.querySelector("#" + playerid).removeEventListener('ended', _listener, true);
-      document.querySelector("#" + playerid).addEventListener("ended", _listener, true);
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log(" autoplay started!");
-        }).catch(function (error) {
-          console.log(" autoplay was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error playing media (5) " + playerid);
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-  }
-}
-
-
+//-----------------------------------------------------------------------------------------------------------
 function update_typing(InputKey) {
   console.log(InputKey);
   if (InputKey !== "!" && InputKey !== "|") {
@@ -311,6 +174,8 @@ function update_typing(InputKey) {
   });
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function keypress_event_function(event) {
   keyboard_re_enable_timeout = 250;
   if (event.detail.key !== "") {
@@ -318,6 +183,8 @@ function keypress_event_function(event) {
   }
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function LoadKeyboard() {
 
   if (LessonLanguage === "tr") {
@@ -369,6 +236,8 @@ function LoadKeyboard() {
 
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 $(document).ready(function () {
 
   LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');

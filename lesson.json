@@ -459,6 +459,56 @@
     ]
   },
   {
+    "id": "2510",
+    "name": "WordSound",
+    "description": "Word Sound",
+    "picture": "./lesson_pictures/word_sound.jpg",
+    "screen_path": "html/word-sound/index.html",
+    "buttons": [
+      {
+        "true_name": "Keep score",
+        "false_name": "Do not keep score",
+        "query": "scoring",
+        "true_value": "yes",
+        "false_value": "no"
+      }
+    ],
+    "lessons": [
+      {
+        "name": "Turkish",
+        "query": "language",
+        "value": "tr"
+      },
+      {
+        "name": "English",
+        "query": "language",
+        "value": "en"
+      },
+      {
+        "name": "Chinese",
+        "query": "language",
+        "value": "ch"
+      }
+    ],
+    "options": [
+      {
+        "name": "Repeat Sound",
+        "query": "type",
+        "value": "repeat_sound"
+      },
+      {
+        "name": "Delay Sound 5 seconds",
+        "query": "type",
+        "value": "delay_sound"
+      },
+      {
+        "name": "Hear Sound Choose Picture",
+        "query": "type",
+        "value": "choose_picture"
+      }
+    ]
+  },
+  {
     "id": "3500",
     "name": "Opposites",
     "description": "Karsitlar",

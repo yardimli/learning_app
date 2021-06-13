@@ -7,9 +7,6 @@ var LessonRowCount = 0;
 var LessonProgress = 0;
 var CardsOpen = true;
 
-var media_audio_playing = false;
-var media_audio2_playing = false;
-
 var AllWordsData;
 var AlfaWords = [];
 
@@ -19,15 +16,7 @@ var LessonLanguage;
 var LessonCategory;
 
 
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
+//-----------------------------------------------------------------------------------------------------------
 function flipCard(xCard) {
   if (lockBoard) return;
   if (xCard === firstCard) return;
@@ -57,6 +46,7 @@ function flipCard(xCard) {
   }
 }
 
+//-----------------------------------------------------------------------------------------------------------
 function disableCards() {
   $("#" + firstCard).off('click touchstart').off('click touchstart');
   $("#" + secondCard).off('click touchstart').off('click touchstart');
@@ -98,6 +88,8 @@ function disableCards() {
   }, 3000);
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function unflipCards() {
   setTimeout(() => {
     play_sound("../../audio/wrong-sound/yanlis-15.mp3", "media_audio2", false);
@@ -112,24 +104,12 @@ function unflipCards() {
   }, 1500);
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function resetBoard() {
   [hasFlippedCard, lockBoard] = [false, false];
   [firstCard, secondCard] = [null, null];
 }
-
-$.fn.shuffleChildren = function () {
-  $.each(this.get(), function (index, el) {
-    var $el = $(el);
-    var $find = $el.children();
-
-    $find.sort(function () {
-      return 0.5 - Math.random();
-    });
-
-    $el.empty();
-    $find.appendTo($el);
-  });
-};
 
 
 //-----------------------------------------------------------------------
@@ -327,139 +307,8 @@ var _listener = function (playerid) {
 };
 
 
-function play_sound(mp3, playerid, pause_play) {
-  var AudioSrc = mp3;
-  let promise;
 
-  if (pause_play) {
-    console.log("______________ STOP AUDIO " + playerid);
-    if (playerid === "media_audio") {
-      media_audio_playing = false;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = false;
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-    }
-  }
-  else {
-    console.log("try to play: " + AudioSrc);
-
-    $("#" + playerid + "_source").attr("src", AudioSrc);
-
-    if (playerid === "media_audio") {
-      media_audio_playing = true;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = true;
-    }
-
-
-    try {
-      $("#" + playerid)[0].load();//suspends and restores all audio element
-    } catch (e) {
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-      console.log("Error playing audio (1) " + AudioSrc);
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-
-
-    //play
-    try {
-      promise = document.querySelector("#" + playerid).play();
-
-      document.querySelector("#" + playerid).removeEventListener('ended', _listener, true);
-      document.querySelector("#" + playerid).addEventListener("ended", _listener, true);
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log(" autoplay started!");
-        }).catch(function (error) {
-          console.log(" autoplay was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error playing media (5) " + playerid);
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-  }
-}
-
-
+//-----------------------------------------------------------------------------------------------------------
 $(document).ready(function () {
 
   LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');

@@ -31,97 +31,8 @@ var CurrentlyTypedString = "";
 
 var AddWordToEndOfList = false;
 
-$.fn.shuffleChildren = function () {
-	$.each(this.get(), function (index, el) {
-		var $el = $(el);
-		var $find = $el.children();
 
-		$find.sort(function () {
-			return 0.5 - Math.random();
-		});
-
-		$el.empty();
-		$find.appendTo($el);
-	});
-};
-
-
-function play_sound(mp3, playerid) {
-	var AudioSrc = mp3;
-	console.log("try to play: " + AudioSrc);
-
-	$("#" + playerid + "_source").attr("src", AudioSrc);
-
-	try {
-		$("#" + playerid)[0].load();//suspends and restores all audio element
-	} catch (e) {
-		console.log("Error playing audio (1) " + AudioSrc);
-	}
-
-	//pause/stop audio
-	try {
-		var promise = document.querySelector("#" + playerid).pause();
-
-		if (promise !== undefined) {
-			promise.then(function (_) {
-				console.log("audio paused!");
-
-			}).catch(function (error) {
-				console.log("pause was prevented!");
-				console.log(error);
-			});
-		}
-	} catch (e) {
-		console.log("Error pausing media (6) ");
-	}
-
-
-	//play
-	try {
-		var promise = document.querySelector("#" + playerid).play();
-
-		if (promise !== undefined) {
-			promise.then(function (_) {
-				console.log(" autoplay started!");
-			}).catch(function (error) {
-				console.log(" autoplay was prevented!");
-				console.log(error);
-			});
-		}
-	} catch (e) {
-		console.log("Error playing media (5) " + player);
-	}
-}
-
-
-function randomColor() {
-	let colorGen = "0123456789ABCDEF";
-	let len = colorGen.length;
-	let color = "#";
-	for (let i = 0; i < 6; i++) {
-		color += colorGen[Math.floor(Math.random() * len)];
-	}
-
-	return color;
-}
-
-function randomChar() {
-	let letters = "123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM";
-	let len = letters.length;
-	let char = letters[Math.floor(Math.random() * len)];
-	return char;
-}
-
-
-function getRandomColor() {
-	var letters = '0123456789ABCDEF';
-	var color = '#';
-	for (var i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)];
-	}
-	return color;
-}
-
+//-----------------------------------------------------------------------------------------------------------
 function CreateLesson(ArrayID) {
 	AddWordToEndOfList = false;
 	show_keyboard();
@@ -197,6 +108,8 @@ function CreateLesson(ArrayID) {
 
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function CorrectWordEntered() {
 	$("#WordSuggestionsForLesson").hide();
 
@@ -210,7 +123,7 @@ function CorrectWordEntered() {
 		report_lesson("type_words "+LessonKeyboardRandom, LessonLanguage, CorrectWordString, 1);
 
 		Timeout3 = setTimeout(function () {
-			play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
+			play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio",false);
 			$("#ballons").show();
 			$("#ballons").addClass("balloons_hide");
 
@@ -240,6 +153,8 @@ function CorrectWordEntered() {
 	$("#progress_bar_box").css({"width": ((LessonProgress / LessonLength) * 100) + "%"});
 }
 
+
+//-----------------------------------------------------------------------------------------------------------
 function CorrectAnswer(InputKey) {
 
 	clearTimeout(Timeout1);
@@ -266,7 +181,7 @@ function CorrectAnswer(InputKey) {
 		else { //correct letter but not last, advance to next
 
 			Timeout6 = setTimeout(function () {
-				play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio2");
+				play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio2",false);
 			}, 1000);
 
 
@@ -326,7 +241,7 @@ function CorrectAnswer(InputKey) {
 							console.log("Wrong Letter: " + InputKey);
 							Timeout8 = setTimeout(function () {
 //              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
+								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2",false);
 							}, 700);
 
 							Timeout9 = setTimeout(function () {
@@ -387,7 +302,7 @@ function CorrectAnswer(InputKey) {
 							console.log("Wrong Letter: " + InputKey);
 							Timeout8 = setTimeout(function () {
 //              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
+								play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2",false);
 							}, 700);
 
 							Timeout9 = setTimeout(function () {
@@ -428,7 +343,7 @@ function CorrectAnswer(InputKey) {
 		console.log("Wrong Letter: " + InputKey);
 		Timeout8 = setTimeout(function () {
 //              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-			play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
+			play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2",false);
 		}, 700);
 
 		Timeout9 = setTimeout(function () {
@@ -438,6 +353,9 @@ function CorrectAnswer(InputKey) {
 	}
 }
 
+
+
+//-----------------------------------------------------------------------------------------------------------
 $(document).ready(function () {
 
 	LessonParameters = window.sendSyncCmd('get-lesson-parameters', '');
@@ -570,27 +488,6 @@ $(document).ready(function () {
 
 		}
 	});
-
-
-	// if (getParameterByName("nozoom") === "yes") {
-	// 	nozoom = true;
-	// }
-
-	// addEventListener("click", function () {
-	//   if (getParameterByName("nozoom") === "yes") {
-	//     nozoom = true;
-	//   }
-	//   else {
-	//     var
-	//       el = document.documentElement
-	//       , rfs =
-	//       el.requestFullScreen
-	//       || el.webkitRequestFullScreen
-	//       || el.mozRequestFullScreen
-	//     ;
-	//     rfs.call(el);
-	//   }
-	// });
 
 
 	$("#BeginLesson").on('click', function () {

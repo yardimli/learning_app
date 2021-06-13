@@ -2,9 +2,6 @@ var LessonProgress = 0;
 
 var LowerCaseCard = true;
 
-var media_audio_playing = false;
-var media_audio2_playing = false;
-
 var LessonLanguage;
 var LessonParameters;
 var LessonLength;
@@ -42,138 +39,6 @@ var PlayArrayIndex = 0;
 var PlayArray = false;
 
 //-----------------------------------------------------------------------------------------------------------
-function play_sound(mp3, playerid, pause_play) {
-  var AudioSrc = mp3;
-  let promise;
-
-  if (pause_play) {
-    console.log("______________ STOP AUDIO " + playerid);
-    if (playerid === "media_audio") {
-      media_audio_playing = false;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = false;
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-    }
-  }
-  else {
-    console.log("try to play: " + AudioSrc);
-
-    $("#" + playerid + "_source").attr("src", AudioSrc);
-
-    if (playerid === "media_audio") {
-      media_audio_playing = true;
-    }
-
-    if (playerid === "media_audio2") {
-      media_audio2_playing = true;
-    }
-
-
-    try {
-      $("#" + playerid)[0].load();//suspends and restores all audio element
-    } catch (e) {
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-      console.log("Error playing audio (1) " + AudioSrc);
-    }
-
-    //pause/stop audio
-    try {
-      promise = document.querySelector("#" + playerid).pause();
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log("audio paused!");
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-
-        }).catch(function (error) {
-          console.log("pause was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error pausing media (6) ");
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-
-
-    //play
-    try {
-      promise = document.querySelector("#" + playerid).play();
-
-      document.querySelector("#" + playerid).removeEventListener('ended', _listener, true);
-      document.querySelector("#" + playerid).addEventListener("ended", _listener, true);
-
-      if (promise !== undefined) {
-        promise.then(function (_) {
-          console.log(" autoplay started!");
-        }).catch(function (error) {
-          console.log(" autoplay was prevented!");
-          console.log(error);
-          if (playerid === "media_audio") {
-            media_audio_playing = false;
-          }
-
-          if (playerid === "media_audio2") {
-            media_audio2_playing = false;
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Error playing media (5) " + playerid);
-      if (playerid === "media_audio") {
-        media_audio_playing = false;
-      }
-
-      if (playerid === "media_audio2") {
-        media_audio2_playing = false;
-      }
-    }
-  }
-}
-
 var _listener = function (playerid) {
 
   if (playerid.target.id === "media_audio") {
@@ -197,7 +62,7 @@ var _listener = function (playerid) {
   if (PlayArray) {
     if (PlayArrayIndex < PlayArrayList.length - 1) {
       PlayArrayIndex++;
-      play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
+      play_sound(PlayArrayList[PlayArrayIndex], "media_audio",false);
     }
     else {
       PlayArray = false;
@@ -208,65 +73,6 @@ var _listener = function (playerid) {
 
 
 //-----------------------------------------------------------------------------------------------------------
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-
-//-----------------------------------------------------------------------------------------------------------
-$.fn.shuffleChildren = function () {
-  $.each(this.get(), function (index, el) {
-    var $el = $(el);
-    var $find = $el.children();
-
-    $find.sort(function () {
-      return 0.5 - Math.random();
-    });
-
-    $el.empty();
-    $find.appendTo($el);
-  });
-};
-
-
-//-----------------------------------------------------------------------------------------------------------
-function shuffle(array) {
-  var m = array.length, t, i;
-
-  // While there remain elements to shuffle…
-  while (m) {
-
-    // Pick a remaining element…
-    i = Math.floor(Math.random() * m--);
-
-    // And swap it with the current element.
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-
-  return array;
-}
-
-$.fn.randomize = function (selector) {
-  var $elems = selector ? $(this).find(selector) : $(this).children(),
-    $parents = $elems.parent();
-
-  $parents.each(function () {
-    $(this).children(selector).sort(function () {
-      return Math.round(Math.random()) - 0.5;
-      // }). remove().appendTo(this); // 2014-05-24: Removed `random` but leaving for reference. See notes under 'ANOTHER EDIT'
-    }).detach().appendTo(this);
-  });
-
-  return this;
-};
-
 function duck_string(duck_id, number_of_ducks, duck_width = 40, duck_height = 0, duck_row = 5) {
 
 
@@ -328,7 +134,7 @@ function AskMathQuestion(QuestionNumber) {
 
   PlayArrayIndex = 0;
   PlayArray = true;
-  play_sound(PlayArrayList[PlayArrayIndex], "media_audio");
+  play_sound(PlayArrayList[PlayArrayIndex], "media_audio",false);
 
 
   $("#MathQuestionDiv").append("<div class='question_div'><div class='text_style'>" + MathLessonArray[QuestionNumber].a + "</div>" + duck_string("question_a", MathLessonArray[QuestionNumber].a, duck_width_question, duck_height_question, duck_row) + "</div>");
@@ -416,7 +222,7 @@ function AskMathQuestion(QuestionNumber) {
     PlayArray = false;
 
     var audio_file_number = "/math/" + LessonLanguage + "/" + $(this).data("card_number") + ".mp3";
-    play_sound("../../audio/" + audio_file_number, "media_audio");
+    play_sound("../../audio/" + audio_file_number, "media_audio",false);
 
     if ($(this).data("is_correct") === "yes") {
 
@@ -452,7 +258,7 @@ function AskMathQuestion(QuestionNumber) {
           }, 250);
 
           setTimeout(() => {
-            play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
+            play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio",false);
           }, 1000);
         }
 
@@ -481,7 +287,7 @@ function AskMathQuestion(QuestionNumber) {
         // $("#correct_answer_div").css({"opacity":1});
 
         setTimeout(() => {
-          play_sound("../../audio/" + audio_file_correct, "media_audio");
+          play_sound("../../audio/" + audio_file_correct, "media_audio",false);
           // $("#MathAnswersDiv").fadeIn();
 
         }, 1000);
@@ -509,8 +315,8 @@ function CorrectAnswer() {
     $("#ballons").addClass("balloons_hide");
 
 
-    play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2");
-    play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio");
+    play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2",false);
+    play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio",false);
     CorrectAnswerBoolean = true;
 
   }, 1000);

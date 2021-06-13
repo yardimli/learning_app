@@ -33,76 +33,6 @@ var nozoom = false;
 var SpeakLetter = "yes";
 var KeyboardSize = "large";
 
-function shuffle(a) {
-	var j, x, i;
-	for (i = a.length - 1; i > 0; i--) {
-		j = Math.floor(Math.random() * (i + 1));
-		x = a[i];
-		a[i] = a[j];
-		a[j] = x;
-	}
-	return a;
-}
-
-
-
-function play_sound(mp3, playerid) {
-	var AudioSrc = mp3;
-	console.log("try to play: " + AudioSrc);
-
-	$("#" + playerid + "_source").attr("src", AudioSrc);
-
-	try {
-		$("#" + playerid)[0].load();//suspends and restores all audio element
-	} catch (e) {
-		console.log("Error playing audio (1) " + AudioSrc);
-	}
-
-	//pause/stop audio
-	try {
-		var promise = document.querySelector("#" + playerid).pause();
-
-		if (promise !== undefined) {
-			promise.then(function (_) {
-				console.log("audio paused!");
-
-			}).catch(function (error) {
-				console.log("pause was prevented!");
-				console.log(error);
-			});
-		}
-	} catch (e) {
-		console.log("Error pausing media (6) ");
-	}
-
-
-	//play
-	try {
-		var promise = document.querySelector("#" + playerid).play();
-
-		if (promise !== undefined) {
-			promise.then(function (_) {
-				console.log(" autoplay started!");
-			}).catch(function (error) {
-				console.log(" autoplay was prevented!");
-				console.log(error);
-			});
-		}
-	} catch (e) {
-		console.log("Error playing media (5) " + player);
-	}
-
-}
-
-function getRandomColor() {
-	var letters = '0123456789ABCDEF';
-	var color = '#';
-	for (var i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)];
-	}
-	return color;
-}
-
 function CreateLesson(GoToNextLetter, ResetKeyboard) {
 	LessonInProgress = true;
 
@@ -186,8 +116,8 @@ function CreateLesson(GoToNextLetter, ResetKeyboard) {
 		$("#letters_span span:first").addClass("fadeout_letter");
 	}, 3000);
 
-	play_sound(WordAudio, "media_audio");
-	play_sound(WordVideo, "media_video");
+	play_sound(WordAudio, "media_audio",false);
+	play_sound(WordVideo, "media_video",false);
 
 	if (ResetKeyboard) {
 		RandomLetters = "";
@@ -284,14 +214,14 @@ function CorrectAnswer() {
 	LessonInProgress = false;
 
 	if (WrongCount === 0) {
-		play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
+		play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio",false);
 	}
 
 	$("#letters_span span:first").html(CorrectKey);
 	$("#letters_span span:first").addClass("fadein_letter");
 
 	setTimeout(function () {
-		play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 10) + 1) + ".mp3", "media_audio2");
+		play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 10) + 1) + ".mp3", "media_audio2",false);
 		if (WordHints) {
 			$("#word_letter").removeClass("animate-flicker");
 			$("#word_letter").addClass("animate-zoom");
@@ -495,10 +425,10 @@ $(document).ready(function () {
 
 				Timer1 = setTimeout(function () {
 					if (LessonRandom === "full" || LessonRandom === "full_inc") {
-						play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 10) + 6) + ".mp3", "media_audio2");
+						play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 10) + 6) + ".mp3", "media_audio2",false);
 					}
 					else {
-						play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 16) + 1) + ".mp3", "media_audio2");
+						play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 16) + 1) + ".mp3", "media_audio2",false);
 
 					}
 				}, 1500);
@@ -515,16 +445,16 @@ $(document).ready(function () {
 
 					Timer2 = setTimeout(function () {
 						$("#letters_span span:first").removeClass("fadein_letter");
-						play_sound(WordAudio, "media_audio");
-						play_sound(WordVideo, "media_video");
+						play_sound(WordAudio, "media_audio",false);
+						play_sound(WordVideo, "media_video",false);
 					}, 4000);
 
 				}
 				else {
 
 					setTimeout(function () {
-						play_sound(WordAudio, "media_audio");
-						play_sound(WordVideo, "media_video");
+						play_sound(WordAudio, "media_audio",false);
+						play_sound(WordVideo, "media_video",false);
 						$("#letters_span span:first").removeClass("fadein_letter");
 
 

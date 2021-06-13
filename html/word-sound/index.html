@@ -5,13 +5,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
 
-	<title>250 Cards Game</title>
+	<title>Word Sound</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="../css/bootstrap.min.css" rel="stylesheet">
 
+	<!-- Custom styles for this template -->
+	<link href="../css/memory-game.css" rel="stylesheet">
+
 	<link href="../css/balloons.css" rel="stylesheet">
-	<link href="../css/oposites-game.css" rel="stylesheet">
 
 	<style>
     @font-face {
@@ -20,48 +22,26 @@
     }
 	</style>
 
-	<script>
-	</script>
-
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {
-		window.module = module;
-		module = undefined;
-	}</script>
+    window.module = module;
+    module = undefined;
+  }</script>
 
 	<script src="../js/jquery.min.js"></script>
 	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/report_ajax.js"></script>
+	<script src="../js/anime.min.js"></script>
+
 	<script src="../js/play_sound.js"></script>
-	<script src="opposites-engine.js"></script>
+	<script src="../js/tone.js"></script>
+	<script src="word-sound.js"></script>
 
 
 	<!-- Insert this line after script imports -->
 	<script>if (window.module) module = window.module;</script>
 
-
 </head>
 <body>
-
-<div class="modal" tabindex="-1" role="dialog" id="full_screen_dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Full Screen</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<p>Make Full Screen.</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="make_full_screen">Yes</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <div style="position:fixed; top:0px;  width:100%; overflow:hidden; white-space: nowrap; height:15px; z-index: 10; display: flex; background-color: white;"
      id="progress_box">
@@ -83,9 +63,21 @@
 	</div>
 </div>
 
-<div id="CorrectWordContainer" style="position: fixed; top:30px; width: 100%;"></div>
+<div class="p-3 pt-4" style="height: 100vh;">
+	<div id="PictureContainer" class="d-inline-block w-50 mr-4">
+	</div>
+	<div class="d-inline-block w-25 align-top">
+		<br>
+		<br>
+		<br>
+		<div id="listen_button" class="btn btn-lg btn-primary" style="min-width: 200px; cursor: pointer;">Listen</div>
+		<br>
+		<br>
+		<br>
 
-<div id="WordContainer" style="position: fixed; bottom:30px; width: 100%; text-align: center;"></div>
+		<div id="next_button" class="btn btn-lg btn-danger" style="min-width: 200px; cursor: pointer;">Next</div>
+	</div>
+</div>
 
 <audio preload="none" id="media_audio">
 	<source id="media_audio_source" src="" type="audio/mpeg">

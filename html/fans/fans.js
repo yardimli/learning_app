@@ -24,54 +24,6 @@ var SpeakLetter = "yes";
 var KeyboardSize = "large";
 
 
-function play_sound(mp3,playerid) {
-  var AudioSrc = mp3;
-  console.log("try to play: "+AudioSrc);
-
-  $("#"+playerid+"_source").attr("src", AudioSrc);
-
-  try {
-    $("#"+playerid)[0].load();//suspends and restores all audio element
-  } catch (e) {
-    console.log("Error playing audio (1) " + AudioSrc);
-  }
-
-  //pause/stop audio
-  try {
-    var promise = document.querySelector("#"+playerid).pause();
-
-    if (promise !== undefined) {
-      promise.then(function (_) {
-        console.log("audio paused!");
-
-      }).catch(function (error) {
-        console.log("pause was prevented!");
-        console.log(error);
-      });
-    }
-  } catch (e) {
-    console.log("Error pausing media (6) ");
-  }
-
-
-  //play
-  try {
-    var promise = document.querySelector("#"+playerid).play();
-
-    if (promise !== undefined) {
-      promise.then(function (_) {
-        console.log(" autoplay started!");
-      }).catch(function (error) {
-        console.log(" autoplay was prevented!");
-        console.log(error);
-      });
-    }
-  } catch (e) {
-    console.log("Error playing media (5) " + player);
-  }
-
-}
-
 
 function addFan(fan_number, left, top, width, x_visible, x_animate) {
   fan_animations.push({
@@ -87,16 +39,6 @@ function addFan(fan_number, left, top, width, x_visible, x_animate) {
     "class='fan_1' style='width:" + width + "px; left:" + left + "px; top:" + top + "px;'>");
 }
 
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-
 function clickable_numbers(total_numbers, correct_number, left, top, width) {
   for (i = 0; i < total_numbers; i++) {
 
@@ -106,12 +48,6 @@ function clickable_numbers(total_numbers, correct_number, left, top, width) {
   }
 
 }
-
-
-// addFan(3, 60, 0, 300, true, false);
-// addFan(1, 500, 50, 300, true, false);
-// addFan(2, 200, 130, 300, true, false);
-//    clickable_numbers(8,3,20,500,180);
 
 
 function intersectRect(r1_top, r1_left, r2_top, r2_left) {
@@ -137,15 +73,15 @@ function CreateLesson() {
   var NumberOfFans = RandomList[LessonProgress - 1];
 
   if (LessonLanguage === "tr") {
-    play_sound("/audio/letters/tr/Default_" + RandomList[LessonProgress - 1] + ".wav","media_audio");
+    play_sound("/audio/letters/tr/Default_" + RandomList[LessonProgress - 1] + ".wav","media_audio",false);
   }
 
   if (LessonLanguage === "en") {
-    play_sound("/audio/letters/en/" + RandomList[LessonProgress - 1] + ".mp3","media_audio");
+    play_sound("/audio/letters/en/" + RandomList[LessonProgress - 1] + ".mp3","media_audio",false);
   }
 
   if (LessonLanguage === "ch") {
-    play_sound("/audio/letters/ch/number_" + RandomList[LessonProgress - 1] + "_ch.mp3","media_audio");
+    play_sound("/audio/letters/ch/number_" + RandomList[LessonProgress - 1] + "_ch.mp3","media_audio",false);
   }
 
   if (WordHints) {
@@ -236,41 +172,21 @@ function CreateLesson() {
     }
 
   }
-
-  // CorrectKey = NumberOfFans + "";
-  // $.ajax({
-  //   url: "/surface_cmd?cmd=keyboard_keys&keys=" + key_string,
-  //   method: 'get',
-  //   success: function (data) {
-  //     console.log("---");
-  //     console.log(data);
-  //   }
-  // });
-
 }
 
 function CorrectAnswer() {
 
-  // $.ajax({
-  //   url: "/surface_cmd?cmd=keyboard_keys&keys=ABC",
-  //   method: 'get',
-  //   success: function (data) {
-  //     console.log("---");
-  //     console.log(data);
-  //   }
-  // });
-
   CorrectKey = "";
   setTimeout(function () {
-    play_sound("../audio/correct-sound/switch_1.mp3","media_audio");
+    play_sound("../audio/correct-sound/switch_1.mp3","media_audio",false);
   }, 150);
 
   setTimeout(function () {
-    play_sound("../audio/correct-sound/clap_2.mp3","media_audio");
+    play_sound("../audio/correct-sound/clap_2.mp3","media_audio",false);
   }, 400);
 
   setTimeout(function () {
-    play_sound("../audio/correct-sound/bravo-"+ Math.floor( (Math.random() * 10) +1 ) +".mp3","media_audio2");
+    play_sound("../audio/correct-sound/bravo-"+ Math.floor( (Math.random() * 10) +1 ) +".mp3","media_audio2",false);
   }, 400);
 
 
@@ -318,29 +234,6 @@ $(document).ready(function () {
   if (!WordHints) {
     $("#word_letter").hide();
   }
-
-  // if (getParameterByName("nozoom") === "yes") {
-  //   nozoom = true;
-  // }
-  //
-  // addEventListener("click", function () {
-  //   if (getParameterByName("nozoom") === "yes") {
-  //     nozoom = true;
-  //
-  //   }
-  //   else {
-  //     var
-  //       el = document.documentElement
-  //       , rfs =
-  //       el.requestFullScreen
-  //       || el.webkitRequestFullScreen
-  //       || el.mozRequestFullScreen
-  //     ;
-  //     rfs.call(el);
-  //   }
-  // });
-
-
 
   for (var i = 0; i < LessonLength; i++) {
     var TempRandom = Math.floor(Math.random() * MaxFans) + 1;
@@ -404,69 +297,5 @@ $(document).ready(function () {
     }
   });
 
-
-//   setInterval(function () {
-//
-//     $.ajax({
-//       url: "/surface_cmd?cmd=what_key",
-//       method: 'get',
-//       success: function (data) {
-//         if (data.key !== "") {
-//           if (data.key == CorrectKey) {
-//             CorrectAnswer();
-//           }
-//           else if (CorrectKey === "") {
-//             play_sound("../audio/correct-sound/switch_1.mp3","media_audio");
-//           }
-//           else {
-//
-//             key_string = key_string.replace(data.key.toUpperCase(),"");
-//
-//             $.ajax({
-//               url: "/surface_cmd?cmd=keyboard_keys&keys=" + key_string,
-//               method: 'get',
-//               success: function (data) {
-//                 console.log("---");
-//                 console.log(data);
-//               }
-//             });
-//
-//
-//             setTimeout(function () {
-// //              play_sound("../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-//               play_sound("../audio/wrong-sound/yanlis-"+ Math.floor( (Math.random() * 16) +1 ) +".mp3","media_audio2");
-//             }, 700);
-//           }
-//         }
-//       }
-//     });
-//
-//
-//     if (StartAnimation) {
-//       for (var i = 0; i < fan_animations.length; i++) {
-//         if (fan_animations[i].is_animate) {
-//           fan_animations[i].fan_position++;
-//           $("#fan_image_" + i).attr("src", "ceiling-fan-anim/" + fan_animations[i].fan_id + "/" + fan_animations[i].fan_position + ".png");
-//           if (fan_animations[i].fan_position >= fan_animations[i].max_position) {
-//             fan_animations[i].fan_position = 0;
-//           }
-//         }
-//
-//         if (fan_animations[i].is_visible) {
-//           $("#fan_image_" + i).show();
-//         }
-//         else {
-//           $("#fan_image_" + i).hide();
-//         }
-//       }
-//
-//       $("#fan_1").attr("src", "ceiling-fan-anim/1/" + fan_1_anime + ".png");
-//       fan_1_anime++;
-//       if (fan_1_anime >= 4) {
-//         fan_1_anime = 1;
-//       }
-//     }
-//
-//   }, 100);
 
 });
