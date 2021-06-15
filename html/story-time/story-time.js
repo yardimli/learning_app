@@ -26,97 +26,6 @@ var LessonRedoWrongAnswers = "yes";
 
 var AddWordToEndOfList = false;
 
-$.fn.shuffleChildren = function () {
-  $.each(this.get(), function (index, el) {
-    var $el = $(el);
-    var $find = $el.children();
-
-    $find.sort(function () {
-      return 0.5 - Math.random();
-    });
-
-    $el.empty();
-    $find.appendTo($el);
-  });
-};
-
-
-function play_sound(mp3, playerid) {
-  var AudioSrc = mp3;
-  console.log("try to play: " + AudioSrc);
-
-  $("#" + playerid + "_source").attr("src", AudioSrc);
-
-  try {
-    $("#" + playerid)[0].load();//suspends and restores all audio element
-  } catch (e) {
-    console.log("Error playing audio (1) " + AudioSrc);
-  }
-
-  //pause/stop audio
-  try {
-    var promise = document.querySelector("#" + playerid).pause();
-
-    if (promise !== undefined) {
-      promise.then(function (_) {
-        console.log("audio paused!");
-
-      }).catch(function (error) {
-        console.log("pause was prevented!");
-        console.log(error);
-      });
-    }
-  } catch (e) {
-    console.log("Error pausing media (6) ");
-  }
-
-
-  //play
-  try {
-    var promise = document.querySelector("#" + playerid).play();
-
-    if (promise !== undefined) {
-      promise.then(function (_) {
-        console.log(" autoplay started!");
-      }).catch(function (error) {
-        console.log(" autoplay was prevented!");
-        console.log(error);
-      });
-    }
-  } catch (e) {
-    console.log("Error playing media (5) " + player);
-  }
-}
-
-
-function randomColor() {
-  let colorGen = "0123456789ABCDEF";
-  let len = colorGen.length;
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += colorGen[Math.floor(Math.random() * len)];
-  }
-
-  return color;
-}
-
-function randomChar() {
-  let letters = "123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM";
-  let len = letters.length;
-  let char = letters[Math.floor(Math.random() * len)];
-  return char;
-}
-
-
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
 function CreateLesson(ArrayID) {
   AddWordToEndOfList = false;
   $("#WordSuggestionsForLesson").show();
@@ -142,110 +51,34 @@ function CreateLesson(ArrayID) {
 
   play_sound("poster://audio/story/" + AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].audio, "media_audio", false);
 
-//  CorrectWordAudio = "poster://audio/" + LessonLanguage + "/" + AlfaWords[ArrayID].audio;
+  console.log( AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ] );
 
-  CorrectWordString = "";
-  LessonString = "";
-  LessonStringPos = 0;
-  CorrectKey = "";
+  CreateQuestion(ArrayID, 0)
 
 }
 
-function CorrectWordEntered() {
-  $("#WordSuggestionsForLesson").hide();
+function CreateQuestion(ArrayID,QuestionIndex) {
+  var ThisQuestion = AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].questions[QuestionIndex];
 
-  let BallonTimeout = 3000;
-  if (!AddWordToEndOfList) {
-    report_lesson("type_words " + LessonKeyboardRandom, LessonLanguage, CorrectWordString, 1);
+  $("#question_picture").attr('src', 'poster://pictures/story-question/' + ThisQuestion.picture);
 
-    Timeout3 = setTimeout(function () {
-      play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio");
-      $("#ballons").show();
-      $("#ballons").addClass("balloons_hide");
+  $("#question_title").html( ThisQuestion.question);
+//  $("#question_answers").html(  AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].story.replace(/\n/gi,"<br>"));
 
-    }, 3000);
-    BallonTimeout = 6000;
+  play_sound("poster://audio/story-question/" + ThisQuestion.audio, "media_audio", false);
+
+  $("#question_title").html( ThisQuestion.question);
+
+  $("#question_answers").html("");
+
+  for (var i=0; i<ThisQuestion.answers.length; i++) {
+    $("#question_answers").append( ThisQuestion.answers[i].answer + "<br>" );
   }
-  else {
-    report_lesson("type_words " + LessonKeyboardRandom, LessonLanguage, CorrectWordString, 0);
-  }
 
-  Timeout4 = setTimeout(function () {
-    if (LessonProgress >= LessonLength) {
-      alert("Lesson Finished!");
-    }
-    else {
-      $("#WordSuggestionsForLesson").css({"position": "absolute", "bottom": ($("#WordsForLesson").outerHeight() + 5) + "px"});
-      $("#WordSuggestionsForLesson").html("");
-      $("#WordsForLesson").html("");
-      LessonProgress++;
-      CreateLesson($(".story_selected:eq(" + (LessonProgress - 1) + ")").data("id"));
 
-      $("#ballons").hide();
-    }
-  }, BallonTimeout);
-
-  $("#progress_bar_box").css({"width": ((LessonProgress / LessonLength) * 100) + "%"});
 }
 
-function CorrectAnswer(InputKey) {
 
-  clearTimeout(Timeout1);
-  clearTimeout(Timeout2);
-  clearTimeout(Timeout3);
-  clearTimeout(Timeout4);
-  clearTimeout(Timeout5);
-  clearTimeout(Timeout6);
-  clearTimeout(Timeout7);
-  clearTimeout(Timeout8);
-  clearTimeout(Timeout9);
-  clearTimeout(Timeout10);
-
-  if (CorrectKey === InputKey) {
-    $("#WordsForLesson").append(CorrectKey);
-    console.log(LessonStringPos + " === " + (LessonString.length - 1) + " --" + LessonString + "---");
-
-    if (CurrentlyTypedString === CorrectWordString) {
-      // if (LessonStringPos === LessonString.length - 1) { //last letter of the word
-      CorrectWordEntered();
-    }
-    else { //correct letter but not last, advance to next
-
-      Timeout6 = setTimeout(function () {
-        play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 5) + 5) + ".mp3", "media_audio2");
-      }, 1000);
-
-
-      LessonStringPos++;
-
-      CorrectKey = LessonString[LessonStringPos];
-
-      // play_sound("../../audio/correct-sound/bravo-6.mp3", "media_audio2");
-
-    }
-  }
-  else { //wrong letter pressed
-
-
-    if (!AddWordToEndOfList && LessonRedoWrongAnswers === "yes") {
-
-      LessonStoryQuestionArray.push( LessonStoryQuestionArray[LessonProgress] );
-      LessonLength = LessonStoryQuestionArray.length;
-      AddWordToEndOfList = true;
-    }
-
-    console.log("Wrong Letter: " + InputKey);
-    Timeout8 = setTimeout(function () {
-//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-      play_sound("../../audio/wrong-sound/yanlis-" + Math.floor((Math.random() * 7) + 8) + ".mp3", "media_audio2");
-    }, 700);
-
-    Timeout9 = setTimeout(function () {
-//              play_sound("../../audio/wrong-sound/wrong-answer-short-buzzer-double-01.mp3");
-      play_sound(CorrectWordAudio, "media_audio", false);
-    }, 1700);
-  }
-}
 
 $(document).ready(function () {
 

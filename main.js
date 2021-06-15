@@ -236,6 +236,16 @@ function parse_story(event) {
           });
         }
 
+        if (story_question.picture !== null && story_question.picture !== "") {
+          download_array.push({
+            "processed": false,
+            "media_file": story_question.picture,
+            "media_hash": story_question.picture_hash,
+            "media_path": "pictures" + path.sep + "story-question",
+            "media_url": "https://elosoft.tw/picture-dictionary-editor/pictures/story-question/"
+          });
+        }
+
         for (var j = 0; j < story_question.answers.length; j++) {
           var question_answer = story_question.answers[j];
 //          console.log(question_answer);
@@ -445,6 +455,9 @@ function createWindow() {
 
     mkdirp(path.join(dataPath, "pictures" + path.sep + "story-answer")).then(made =>
       log_and_reply(event, path.join(dataPath, "pictures" + path.sep + "story-answer") + " folder made"));
+
+    mkdirp(path.join(dataPath, "pictures" + path.sep + "story-question")).then(made =>
+      log_and_reply(event, path.join(dataPath, "pictures" + path.sep + "story-question") + " made"));
 
 
     mkdirp(path.join(dataPath, "audio" + path.sep + "prepositions")).then(made =>
