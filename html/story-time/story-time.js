@@ -26,9 +26,85 @@ var LessonRedoWrongAnswers = "yes";
 
 var AddWordToEndOfList = false;
 
-function CreateLesson(ArrayID) {
+var LessonIntroductionPlaying = false;
+var QuestionIndex = 0;
+var GotoNextQuestion = false;
+var AnswerIsCorrect = false;
+var AnswerIsCorrectLoadNext = false;
+
+var LessonQuestionCount = 0;
+var LessonQuestionProgress = 0;
+
+//---------------------------------------------------------------
+var _listener = function (playerid) {
+
+  if (playerid.target.id === "media_audio") {
+    media_audio_playing = false;
+  }
+
+  if (playerid.target.id === "media_audio2") {
+    media_audio2_playing = false;
+  }
+
+
+  if (playerid.target.id === "media_audio") {
+    if (LessonIntroductionPlaying) {
+      LessonIntroductionPlaying = false;
+      $("#start_questions").show();
+    }
+
+    if (GotoNextQuestion) {
+      GotoNextQuestion = false;
+      var ArrayID = LessonProgress - 1;
+      var CurrentStoryID = LessonStoryQuestionArray[ArrayID].story_id;
+
+      if (AnswerIsCorrect) {
+        play_sound("../../audio/correct-sound/clap_2.mp3", "media_audio2", false);
+
+        setTimeout(function () {
+          AnswerIsCorrectLoadNext = true;
+          play_sound("../../audio/correct-sound/bravo-" + Math.floor((Math.random() * 10) + 1) + ".mp3", "media_audio");
+
+          $("#ballons").show();
+          $("#ballons").addClass("balloons_hide");
+
+        }, 400);
+
+      } else
+      {
+        play_sound("../../audio/wrong-sound/yanlis-15.mp3", "media_audio2", false);
+      }
+
+    }
+
+    if (AnswerIsCorrectLoadNext) {
+      LessonQuestionProgress++;
+      $("#progress_bar_box").css({"width": ((LessonQuestionProgress / (LessonQuestionCount)) * 100) + "%"});
+
+      AnswerIsCorrectLoadNext = false;
+      var ArrayID = LessonProgress - 1;
+      var CurrentStoryID = LessonStoryQuestionArray[ArrayID].story_id;
+      QuestionIndex++;
+      if (QuestionIndex < AllStoryData[CurrentStoryID].questions.length - 1) {
+        CreateQuestion();
+      }
+      else {
+        QuestionIndex = 0;
+        LessonProgress++;
+        console.log(LessonProgress);
+        CreateLesson();
+      }
+    }
+  }
+};
+
+
+function CreateLesson() {
+  var ArrayID = LessonProgress - 1;
+  var CurrentStoryID = LessonStoryQuestionArray[ArrayID].story_id;
   AddWordToEndOfList = false;
-  $("#WordSuggestionsForLesson").show();
+
+  play_sound("", "media_audio2", true);
 
   clearTimeout(Timeout1);
   clearTimeout(Timeout2);
@@ -44,40 +120,82 @@ function CreateLesson(ArrayID) {
   console.log(ArrayID);
   $("#ballons").hide();
   $("#story_div").show();
-  $("#story_picture").attr('src', 'poster://pictures/story/' + AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].picture);
+  $("#question_div").hide();
+  $("#story_picture").attr('src', 'poster://pictures/story/' + AllStoryData[CurrentStoryID].picture);
 
-  $("#story_title").html( AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].title);
-  $("#story_text").html(  AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].story.replace(/\n/gi,"<br>"));
+  $("#story_title").html(AllStoryData[CurrentStoryID].title);
+  $("#story_text").html(AllStoryData[CurrentStoryID].story.replace(/\n/gi, "<br>"));
 
-  play_sound("poster://audio/story/" + AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].audio, "media_audio", false);
+  play_sound("poster://audio/story/" + AllStoryData[CurrentStoryID].audio, "media_audio", false);
 
-  console.log( AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ] );
-
-  CreateQuestion(ArrayID, 0)
-
+  console.log(AllStoryData[CurrentStoryID]);
+  $("#start_questions").hide();
+  LessonIntroductionPlaying = true;
+  QuestionIndex = 0;
+  AllStoryData[CurrentStoryID].questions = shuffleArray(AllStoryData[CurrentStoryID].questions);
 }
 
-function CreateQuestion(ArrayID,QuestionIndex) {
-  var ThisQuestion = AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].questions[QuestionIndex];
+function CreateQuestion() {
+  var ArrayID = LessonProgress - 1;
+  var CurrentStoryID = LessonStoryQuestionArray[ArrayID].story_id;
+  var ThisQuestion = AllStoryData[CurrentStoryID].questions[QuestionIndex];
 
+  AnswerIsCorrect = false;
+
+  $("#ballons").hide();
+  play_sound("", "media_audio2", true);
+
+  $("#question_div").show();
   $("#question_picture").attr('src', 'poster://pictures/story-question/' + ThisQuestion.picture);
 
-  $("#question_title").html( ThisQuestion.question);
-//  $("#question_answers").html(  AllStoryData[ LessonStoryQuestionArray[ArrayID].story_id ].story.replace(/\n/gi,"<br>"));
+  $("#question_title").html(ThisQuestion.question);
+//  $("#question_answers").html(  AllStoryData[ CurrentStoryID ].story.replace(/\n/gi,"<br>"));
 
   play_sound("poster://audio/story-question/" + ThisQuestion.audio, "media_audio", false);
 
-  $("#question_title").html( ThisQuestion.question);
+  $("#question_title").html(ThisQuestion.question);
 
   $("#question_answers").html("");
 
-  for (var i=0; i<ThisQuestion.answers.length; i++) {
-    $("#question_answers").append( ThisQuestion.answers[i].answer + "<br>" );
+  var AnswersArray = [];
+
+  for (var i = 0; i < ThisQuestion.answers.length; i++) {
+
+    var isCorrect = ThisQuestion.answers[i].is_correct === "1" ? "yes" : "no";
+
+    $("#question_answers").append("<div class='story_answer_box' data-correct='" + isCorrect + "' data-audio='" + ThisQuestion.answers[i].audio + "'>" + ThisQuestion.answers[i].answer + "</div>");
+    AnswersArray.push(ThisQuestion.answers[i].answer);
   }
 
+  if (ThisQuestion.random_answers_from_other_questions === "1") {
 
+    var WrongAnswerCount = 0;
+    var LoopCounter = 0;
+
+    while (WrongAnswerCount < 3 && LoopCounter < 1000) {
+      LoopCounter++;
+      for (var i2 = 0; i2 < AllStoryData[CurrentStoryID].questions.length; i2++) {
+        if (i2 !== QuestionIndex) {
+          var ThisQuestionTemp = AllStoryData[CurrentStoryID].questions[i2];
+          for (var i3 = 0; i3 < ThisQuestionTemp.answers.length; i3++) {
+            if (Math.random() * 100 > 95 && WrongAnswerCount < 3 && (AnswersArray.indexOf(ThisQuestionTemp.answers[i3].answer) === -1)) {
+              WrongAnswerCount++;
+              $("#question_answers").append("<div class='story_answer_box' data-correct='no' data-audio='" + ThisQuestionTemp.answers[i3].audio + "'>" + ThisQuestionTemp.answers[i3].answer + "</div>");
+              AnswersArray.push(ThisQuestionTemp.answers[i3].answer);
+            }
+          }
+        }
+      }
+    }
+  }
+  $("#question_answers").shuffleChildren();
+
+  $(".story_answer_box").off('click').on('click', function () {
+    play_sound("poster://audio/story-answer/" + $(this).data("audio"), "media_audio", false);
+    AnswerIsCorrect = $(this).data("correct")==="yes";
+    GotoNextQuestion = true;
+  });
 }
-
 
 
 $(document).ready(function () {
@@ -127,6 +245,16 @@ $(document).ready(function () {
   $("#ballons").hide();
 
 
+  $("#start_questions").on('click', function () {
+    $("#start_questions").hide();
+    var ArrayID = LessonProgress - 1;
+    if (AllStoryData[LessonStoryQuestionArray[ArrayID].story_id].hide_after_intro === "1") {
+      $("#story_div").hide();
+    }
+
+    CreateQuestion();
+  });
+
 
   $("#BeginLesson").on('click', function () {
     $("#BeginLesson").hide();
@@ -135,19 +263,20 @@ $(document).ready(function () {
     $(".story_selected").each(function () {
       var story_id = parseInt($(this).data("id"), 10);
       console.log(AllStoryData[story_id]);
+
+      LessonStoryQuestionArray.push({"story_id": story_id, "done": false});
+
       for (var i = 0; i < AllStoryData[story_id].questions.length; i++) {
-//        console.log( AllStoryData[story_id].questions[i].question );
-        LessonStoryQuestionArray.push( { "story_id" : story_id, "question_id" : i, "done" : false } );
+        LessonQuestionCount++;
+//         LessonStoryQuestionArray.push({"story_id": story_id, "question_id": i, "done": false});
       }
       console.log(LessonStoryQuestionArray);
     });
-    LessonLength = LessonStoryQuestionArray.length;
 
+    LessonLength = LessonStoryQuestionArray.length;
     LessonProgress++;
     console.log(LessonProgress);
-    console.log($(".story_selected:eq(" + (LessonProgress - 1) + ")"));
-    console.log($(".story_selected:eq(" + (LessonProgress - 1) + ")").data("id"));
-    CreateLesson(LessonProgress-1);
+    CreateLesson();
   });
 
 });

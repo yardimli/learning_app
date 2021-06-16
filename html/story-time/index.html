@@ -69,30 +69,30 @@
 	<div style="max-height: 250px; display: none; text-align: center; margin-top:18px;" ID="story_div">
 		<div class="row">
 			<div class="col-4">
-				<img src="" id="story_picture" style="max-height: 250px;">
+				<img src="" id="story_picture" style="max-height: 250px;" class="mt-3">
 			</div>
-			<div class="col-6 text-left">
+			<div class="col-6 text-left mt-3">
 				<h2 id="story_title"></h2>
 				<div id="story_text" style="font-size: 18px;"></div>
+				<div class="btn btn-lg btn-danger mt-3" id="start_questions">Start</div>
 			</div>
 		</div>
+	</div>
 
+	<div style="max-height: 250px; display: none; text-align: center; margin-top:18px;" ID="question_div">
 		<div class="row">
 			<div class="col-4">
-				<img src="" id="question_picture" style="max-height: 250px;">
+				<img src="" id="question_picture" style="max-height: 250px;" class="mt-3">
 			</div>
-			<div class="col-6 text-left">
+			<div class="col-6 text-left mt-3">
 				<h2 id="question_title"></h2>
-				<div id="question_answers" style="font-size: 18px;"></div>
+
+				<div class="mt-4" id="question_answers"></div>
 			</div>
 		</div>
-
 	</div>
 
-	<div id="BeginLesson"
-	     style="position: fixed; right:10px; bottom:10px;  background-color: rgb(255,128,0); color:white; border: 1px solid white; font-size: 20px; padding: 10px; border-radius: 5px; cursor: pointer; z-index: 999;">
-		BEGIN LESSON
-	</div>
+	<div id="BeginLesson" class="begin_lesson_button">BEGIN LESSON</div>
 
 </div>
 

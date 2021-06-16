@@ -119,7 +119,7 @@
   display: inline-block;
   /*width: 150px;*/
   /*height: 150px;*/
-  margin:10px;
+  margin: 10px;
 }
 
 .story_select_image {
@@ -132,4 +132,36 @@
 .story_selected {
   background-color: #6666aa !important;
   border-radius: 4px;
+}
+
+
+.story_answer_box {
+  background-color: #fff;
+  color: black;
+  border: 1px solid black;
+  border-radius: 8px;
+  font-size: 22px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.story_answer_box:hover {
+  cursor: pointer;
+  background-color: red;
+  color: white;
+  border: 1px solid white;
+}
+
+.begin_lesson_button {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  background-color: rgb(255, 128, 0);
+  color: white;
+  border: 1px solid white;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 999;
 }
