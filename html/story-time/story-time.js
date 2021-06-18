@@ -77,7 +77,9 @@ var _listener = function (playerid) {
 
       AnswerIsCorrectLoadNext = false;
       var CurrentStoryID = LessonStoryQuestionArray[LessonIndex].story_id;
+
       QuestionIndex++;
+
       if (QuestionIndex < AllStoryData[CurrentStoryID].questions.length) {
         CreateQuestion();
       }
@@ -179,10 +181,11 @@ function CreateLesson() {
   play_sound("poster://audio/story/" + AllStoryData[CurrentStoryID].audio, "media_audio", false);
 
   console.log(AllStoryData[CurrentStoryID]);
+  AllStoryData[CurrentStoryID].questions = shuffleArray(AllStoryData[CurrentStoryID].questions);
+
   $("#start_questions").hide();
   LessonIntroductionPlaying = true;
   QuestionIndex = 0;
-  AllStoryData[CurrentStoryID].questions = shuffleArray(AllStoryData[CurrentStoryID].questions);
 }
 
 
@@ -255,11 +258,32 @@ $(document).ready(function () {
 
       LessonStoryQuestionArray.push({"story_id": story_id, "done": false});
 
+      for (var i = 0; i < AllStoryData[story_id].questions.length; i++) {
+        if (AllStoryData[story_id].questions[i].answers.length===0) {
+          AllStoryData[story_id].questions.splice(i,1);
+          i--;
+          i = (i<0) ? 0 : i;
+        } else
+        {
+          var DeleteQuestion = false;
+          for (var i2 = 0; i2 < AllStoryData[story_id].questions[i].answers.length; i2++) {
+            if (AllStoryData[story_id].questions[i].answers[i2].audio === "" || AllStoryData[story_id].questions[i].answers[i2].audio === null) {
+              DeleteQuestion = true;
+            }
+          }
+          if (DeleteQuestion) {
+            AllStoryData[story_id].questions.splice(i,1);
+            i--;
+            i = (i<0) ? 0 : i;
+          }
+        }
+
+        // LessonStoryQuestionArray.push({"story_id": story_id, "question_id": i, "done": false});
+      }
+
       LessonQuestionCount += AllStoryData[story_id].questions.length;
-      // for (var i = 0; i < AllStoryData[story_id].questions.length; i++) {
-//         LessonStoryQuestionArray.push({"story_id": story_id, "question_id": i, "done": false});
-//       }
     });
+
     console.log(LessonStoryQuestionArray);
 
     LessonLength = LessonStoryQuestionArray.length;

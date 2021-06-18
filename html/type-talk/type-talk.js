@@ -130,7 +130,7 @@ function update_typing(InputKey) {
           WordsAdded.push(WordX);
 
           if (LessonLanguage === "ch") {
-            $("#WordSuggestionsForLesson").append("<div class='btn btn-primary WordSuggestion' style='display: inline-block; font-size: 32px; margin-right: 10px;' data-word_id='" + i + "'>" + WordX_ch + "</div>");
+            $("#WordSuggestionsForLesson").append("<div class='btn btn-primary WordSuggestion' style='display: inline-block; font-size: 50px; margin-right: 10px;' data-word_id='" + i + "'>" + WordX_ch + "</div>");
           }
           else {
             $("#WordSuggestionsForLesson").append("<div class='btn btn-primary WordSuggestion' style='display: inline-block; font-size: 32px; margin-right: 10px;' data-word_id='" + i + "'>" + WordX + "</div>");
@@ -161,7 +161,8 @@ function update_typing(InputKey) {
 
     if (LessonLanguage === "ch") {
       CorrectWordAudio = AllWordsData[parseInt($(this).data("word_id"), 10)].audio_CH;
-      $("#SentenceTextDiv").append("<span class='sentence_words' style='font-family: hanwangmingboldregular;' data-word_id='" + $(this).data("word_id") + "' data-lang='ch'>" + $(this).text() + "</span> ");
+      // $("#SentenceTextDiv").append("<span class='sentence_words' style='font-family: hanwangmingboldregular;' data-word_id='" + $(this).data("word_id") + "' data-lang='ch'>" + $(this).text() + "</span> ");
+      $("#SentenceTextDiv").append("<span class='sentence_words' style='' data-word_id='" + $(this).data("word_id") + "' data-lang='ch'>" + $(this).text() + "</span> ");
     }
 
     if (CorrectWordAudio !== "" && CorrectWordAudio !== null) {
@@ -196,8 +197,10 @@ function LoadKeyboard() {
     $("#WordsForLesson").css({"font-family": "Arial"});
   }
   if (LessonLanguage === "ch") {
-    $("#WordSuggestionsForLesson").css({"font-family": "hanwangmingboldregular"});
-    $("#WordsForLesson").css({"font-family": "hanwangmingboldregular"});
+    $("#WordSuggestionsForLesson").css({"font-family": "Arial"});
+    $("#WordsForLesson").css({"font-family": "Arial"});
+    // $("#WordSuggestionsForLesson").css({"font-family": "hanwangmingboldregular"});
+    // $("#WordsForLesson").css({"font-family": "hanwangmingboldregular"});
   }
 
   $('#keyboard_scripts').remove();
@@ -256,8 +259,10 @@ $(document).ready(function () {
     $("#WordsForLesson").css({"font-family": "Arial"});
   }
   if (LessonLanguage === "ch") {
-    $("#WordSuggestionsForLesson").css({"font-family": "hanwangmingboldregular"});
-    $("#WordsForLesson").css({"font-family": "hanwangmingboldregular"});
+    $("#WordSuggestionsForLesson").css({"font-family": "Arial"});
+    $("#WordsForLesson").css({"font-family": "Arial"});
+    // $("#WordSuggestionsForLesson").css({"font-family": "hanwangmingboldregular"});
+    // $("#WordsForLesson").css({"font-family": "hanwangmingboldregular"});
   }
 
 
